@@ -15,6 +15,7 @@ import UserList from "../pages/admin/UserList";
 import PropertyList from "../pages/admin/PropertyList";
 import BookingList from "../pages/admin/bookingList";
 import OwnerList from "../pages/admin/OwnerList";
+import PropertyDetails from "../pages/user/PropertyDetails";
 
 function AppRoutes() {
   return (
@@ -30,6 +31,7 @@ function AppRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register/>}/>
+        <Route path="/property-details" element={<PropertyDetails/>}/>
       </Route>
 
       {/* Owner Routes */}

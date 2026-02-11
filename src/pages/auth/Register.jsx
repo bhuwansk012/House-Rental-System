@@ -145,7 +145,6 @@ const Register = () => {
               })}
             >
               <option value="">Select</option>
-              <option value="admin">Admin</option>
               <option value="owner">Owner</option>
               <option value="tenant">Tenant</option>
             </select>
