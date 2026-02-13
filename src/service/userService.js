@@ -1,9 +1,9 @@
 import axios from "axios";
 import {USER_URL,REGISTER_URL} from "./url";
 
-export const getAllUsers=()=>{
+export const getAllUsers=async ()=>{
    try{
-    const usersResponse=axios.get(USER_URL);
+    const usersResponse=await axios.get(USER_URL);
     console.log("Users Response:", usersResponse);
     return usersResponse;
    }    
@@ -14,9 +14,9 @@ export const getAllUsers=()=>{
 }
 
 
-export const registerUser=(user)=>{
+export const registerUser=async (user)=>{
     try{
-         const registerResponse=axios.post(REGISTER_URL,user);
+         const registerResponse=await axios.post(REGISTER_URL,user);
             console.log("Register Response:", registerResponse);
          return registerResponse;
     }
@@ -28,10 +28,10 @@ export const registerUser=(user)=>{
 }
 
 
-export const  loginUser=(user)=>{
+export const  loginUser=async (user)=>{
     try
     {
-        const loginResponse=axios.post(LOGIN_URL,user);
+        const loginResponse= await axios.post(LOGIN_URL,user);
         console.log("Login Response:", loginResponse);
         return loginResponse;
     }
