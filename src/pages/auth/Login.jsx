@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import {useNavigate} from 'react-router-dom'
+import {loginUser} from '../../service/userService'
 
 
 const Login = () => {
@@ -16,7 +17,10 @@ const Login = () => {
 
 
   const onSubmit = (data) => {
+      
     console.log(data);
+    const response=loginUser(data);
+    console.log("Login Response in Component:", response);
     navigate('/');
     reset();
   };

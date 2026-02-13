@@ -1,6 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../../service/userService";
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ const Register = () => {
   } = useForm();
 
   const onSubmit = (data) => {
+    registerUser(data)
     console.log("Register Data:", data);
     navigate("/login");
     reset();
@@ -92,9 +95,9 @@ const Register = () => {
               type="text"
               placeholder="98XXXXXXXX"
               className={`w-full px-3 py-2 border rounded-lg focus:outline-none text-sm ${
-                errors.phoneNo ? "border-red-500" : "border-gray-300"
+                errors.phone ? "border-red-500" : "border-gray-300"
               }`}
-              {...register("phoneNo", {
+              {...register("phone", {
                 required: "Phone number is required",
                 pattern: {
                   value: /^[0-9]{10}$/,
@@ -102,9 +105,9 @@ const Register = () => {
                 },
               })}
             />
-            {errors.phoneNo && (
+            {errors.phone && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.phoneNo.message}
+                {errors.phone.message}
               </p>
             )}
           </div>
@@ -127,30 +130,6 @@ const Register = () => {
             {errors.address && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.address.message}
-              </p>
-            )}
-          </div>
-
-          {/* Role */}
-          <div>
-            <label className="block mb-1 font-medium text-sm">
-              Role
-            </label>
-            <select
-              className={`w-full px-3 py-2 border rounded-lg bg-gray-900 focus:outline-none text-sm ${
-                errors.role ? "border-red-500" : "border-gray-300"
-              }`}
-              {...register("role", {
-                required: "Role is required",
-              })}
-            >
-              <option value="">Select</option>
-              <option value="owner">Owner</option>
-              <option value="tenant">Tenant</option>
-            </select>
-            {errors.role && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.role.message}
               </p>
             )}
           </div>
