@@ -9,15 +9,14 @@
 ->service-> the service folder define axos all methods like put get mapping etc
 -
 
-2) Project structre follows
+2) required library
+npm i react-icom
+npm i redux toolkit.
+npm axios for api,
+npm i tailwinds css
+npm react-route-dom,
+npm react-redux,
+npm -i toasts library for the notifications
 
-<main>
-    <app>
-        <AppRoute>
-        <Routes>
-            <Route element={<UserLayout />}>
-                <Route path="/" element={<Home />} />
-            </Route>
-             <AppRoute>
-    </app>
-</main>
+
+
