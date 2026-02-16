@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../../service/userService";
-
+import { registerService } from "../../service/authService";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -14,136 +16,97 @@ const Register = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const onSubmit = (data) => {
-    registerUser(data)
-    console.log("Register Data:", data);
-    navigate("/login");
-    reset();
-  };
+  
+ const onSubmit = async (data) => {
+    console.log("Form Data:", data);
+  try {
+    const response = await registerService(data);
+
+    if (response.status === 201) {
+      toast.success(response.data);   //just response.data
+      reset();
+      navigate("/login");
+    }
+
+  } catch (error) {
+    if (!error.response) {
+      toast.error("Network Error!");
+      return;
+    }
+
+    toast.error(error.response.data || "Registration Failed!");
+  }
+};
+
 
   return (
-    <div className="min-h-176 max-w-380 mx-auto flex items-center justify-center bg-white px-4 drop-shadow-sm">
+    <div className="min-h-screen max-w-380 mx-auto flex items-center justify-center bg-white px-4 shadow-lg">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-lg p-5 bg-gray-950 text-white rounded-xl shadow-lg"
+        className="w-full max-w-md bg-gray-950 text-white p-6 rounded-2xl shadow-xl"
       >
-        <h2 className="text-2xl font-bold text-center mb-5">
-          Sign Up
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Create Account
         </h2>
 
-        {/* GRID START */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Full Name */}
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium">Full Name</label>
+          <input
+            type="text"
+            placeholder="Bhuwan Sarki"
+            className={`w-full px-3 py-2 border rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.fullName ? "border-red-500" : "border-gray-600"
+            }`}
+            {...register("fullName", {
+              required: "Full name is required",
+              minLength: {
+                value: 3,
+                message: "Minimum 3 characters",
+              },
+            })}
+          />
+          {errors.fullName && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.fullName.message}
+            </p>
+          )}
+        </div>
 
-          {/* Full Name */}
-          <div>
-            <label className="block mb-1 font-medium text-sm">
-              Full Name
-            </label>
-            <input
-              type="text"
-              placeholder="Bhuwan Sarki"
-              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none ${
-                errors.fullName ? "border-red-500" : "border-gray-300"
-              }`}
-              {...register("fullName", {
-                required: "Full name is required",
-                minLength: {
-                  value: 3,
-                  message: "Minimum 3 characters",
-                },
-              })}
-            />
-            {errors.fullName && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.fullName.message}
-              </p>
-            )}
-          </div>
+        {/* Email */}
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium">Email</label>
+          <input
+            type="email"
+            placeholder="example@gmail.com"
+            className={`w-full px-3 py-2 border rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.email ? "border-red-500" : "border-gray-600"
+            }`}
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Invalid email format",
+              },
+            })}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
 
-          {/* Email */}
-          <div>
-            <label className="block mb-1 font-medium text-sm">
-              Email
-            </label>
-            <input
-              type="email"
-              placeholder="example@gmail.com"
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none text-sm ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              }`}
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "Invalid email format",
-                },
-              })}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
+        {/* Password */}
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium">Password</label>
 
-          {/* Phone */}
-          <div>
-            <label className="block mb-1 font-medium text-sm">
-              Phone
-            </label>
+          <div className="relative">
             <input
-              type="text"
-              placeholder="98XXXXXXXX"
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none text-sm ${
-                errors.phone ? "border-red-500" : "border-gray-300"
-              }`}
-              {...register("phone", {
-                required: "Phone number is required",
-                pattern: {
-                  value: /^[0-9]{10}$/,
-                  message: "Enter valid 10 digit number",
-                },
-              })}
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.phone.message}
-              </p>
-            )}
-          </div>
-
-          {/* Address */}
-          <div>
-            <label className="block mb-1 font-medium text-sm">
-              Address
-            </label>
-            <input
-              type="text"
-              placeholder="Kathmandu, Nepal"
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none text-sm ${
-                errors.address ? "border-red-500" : "border-gray-300"
-              }`}
-              {...register("address", {
-                required: "Address is required",
-              })}
-            />
-            {errors.address && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.address.message}
-              </p>
-            )}
-          </div>
-
-          {/* Password */}
-          <div>
-            <label className="block mb-1 font-medium text-sm">
-              Password
-            </label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none ${
-                errors.password ? "border-red-500" : "border-gray-300"
+              type={showPassword ? "text" : "password"}
+              placeholder="******"
+              className={`w-full px-3 py-2 border rounded-lg bg-gray-900 text-white pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.password ? "border-red-500" : "border-gray-600"
               }`}
               {...register("password", {
                 required: "Password is required",
@@ -153,22 +116,51 @@ const Register = () => {
                 },
               })}
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            )}
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
 
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.password.message}
+            </p>
+          )}
         </div>
-        {/* GRID END */}
+
+        {/* Role */}
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium">Role</label>
+          <select
+            className={`w-full px-3 py-2 border rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.role ? "border-red-500" : "border-gray-600"
+            }`}
+            {...register("role", {
+              required: "Role is required",
+            })}
+          >
+            <option value="">Select Role</option>
+            <option value="USER">USER</option>
+            <option value="OWNER">OWNER</option>
+          </select>
+          {errors.role && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.role.message}
+            </p>
+          )}
+        </div>
 
         {/* Buttons */}
         <div className="flex gap-3 mt-6">
           <button
             type="button"
             onClick={() => reset()}
-            className="flex-1 bg-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-300"
+            className="flex-1 bg-gray-300 text-black py-2 rounded-lg font-semibold hover:bg-gray-400 transition"
           >
             Clear
           </button>
@@ -176,16 +168,15 @@ const Register = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-900 disabled:opacity-60"
+            className="flex-1 bg-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-60"
           >
-            {isSubmitting ? "Signing up..." : "Sign Up"}
+            {isSubmitting ? "Registering..." : "Register"}
           </button>
         </div>
 
-        {/* Login */}
-        <p className="text-sm text-center mt-4 text-gray-300">
+        <p className="text-sm text-center mt-5 text-gray-300">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-500 hover:underline">
+          <Link to="/login" className="text-blue-400 hover:underline">
             Login
           </Link>
         </p>

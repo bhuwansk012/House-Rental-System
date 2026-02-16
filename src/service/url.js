@@ -1,6 +1,3 @@
-export const BASE_URL="http://localhost:8080/api";
-export const LOGIN_URL=BASE_URL+"/auth/login";
-export const REGISTER_URL=BASE_URL+"/auth/register";
-export const USER_URL=BASE_URL+"/users";
-export const PROFILE_URL=BASE_URL+"profile"
-export const GET_PROFILE_URL=BASE_URL+"viewprofile"
+export const BASIC_URL = "http://localhost:8080/api";
+export const REGISTER_END_POINT ="http://localhost:8080/api/auth/register";
+export const LOGIN_END = BASIC_URL + "/auth/login";

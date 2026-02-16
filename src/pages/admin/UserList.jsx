@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FiEdit, FiTrash2 } from "react-icons/fi";
-import { getAllUsers } from '../../service/userService'
+// import { getAllUsers,deleteUser } from '../../service/userService'
 
 const UserList = () => {
 
@@ -18,6 +18,17 @@ const UserList = () => {
 
     fetchUsers();
   }, []);
+
+ const deletingUser=async (userId)=>{
+    try{
+        const deleteResponse=await deleteUser(userId);
+        console.log("Delete Response:", deleteResponse);
+        setUsers(users.filter(user=>user.id!==userId));
+    } catch(error){
+        console.error("Error deleting user:", error);
+    } 
+  }
+   
 
   return (
     <div className="p-4 bg-white min-h-screen">
@@ -40,17 +51,17 @@ const UserList = () => {
 
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="border-b">
+              <tr key={user.id} className={user.id % 2 === 0 ? "bg-gray-300" : "bg-white"}>
                 <td className='py-2 px-4'>{user.id}</td>
                 <td className="py-2 px-4">{user.fullName}</td>
                 <td className="py-2 px-4">{user.email}</td>
                 <td className="py-2 px-4">{user.phoneNo}</td>
                 <td className="py-2 px-4">{user.address}</td>
-                <td className="py-2 px-4">
-                  <button className="text-gray-600 hover:text-blue-800 mr-3">
+                <td className="py-2 px-6">
+                  <button className="text-gray-600 hover:text-blue-800 mr-3 cusrsor-pointer">
                     <FiEdit size={18} />
                   </button>
-                  <button className="text-red-600 hover:text-red-800">
+                  <button className="text-red-600 hover:text-red-800 cursor-pointer" onClick={() => deletingUser(user.id)}>
                     <FiTrash2 size={18} />
                   </button>
                 </td>

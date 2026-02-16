@@ -36,7 +36,7 @@ function AppRoutes() {
 
       {/* Owner Routes */}
       <Route element={<OwnerLayout />}>
-        <Route path="/owner" element={<OwnerDashboard />} />
+        <Route path="/owner/dashboard" element={<OwnerDashboard />} />
       </Route>
 
       {/* Admin Routes */}

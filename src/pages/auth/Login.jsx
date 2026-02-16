@@ -1,60 +1,102 @@
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import {useNavigate} from 'react-router-dom'
-import {loginUser} from '../../service/userService'
-
+import { Link, useNavigate } from "react-router-dom";
+import { loginService } from "../../service/authService";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [serverError, setServerError] = useState("");
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
-  
-  const navigate = useNavigate()
 
 
-  const onSubmit = (data) => {
-      
-    console.log(data);
-    const response=loginUser(data);
-    console.log("Login Response in Component:", response);
-    navigate('/');
-    reset();
-  };
-  
+
+
+
+const onSubmit = async (data) => {
+  setServerError("");
+
+  try {
+    const response = await loginService(data);
+
+    if (response.status === 200) {
+      toast.success(response.data.message);
+
+      // Save token
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
+
+      if(response.data.role === "ADMIN"){
+        navigate("/admin/dashboard");
+      }
+      else if(response.data.role === "OWNER"){
+      navigate("/owner/dashboard");
+    }
+    else{
+        navigate("/");
+      }
+    }
+
+  } catch (error) {
+    if (!error.response) {
+      toast.error("Network Error!");
+      return;
+    }
+
+    const status = error.response.status;
+
+    if (status === 401) {
+      toast.error("Invalid Email or Password");
+    } else if (status === 400) {
+      toast.error("Bad Request");
+    } else if (status === 500) {
+      toast.error("Server Error");
+    } else {
+      toast.error("Something went wrong!");
+    }
+  }
+};
+
+
+
+
 
   return (
-    <div className="min-h-176 max-w-380 mx-auto flex items-center justify-center bg-white  px-4 drop-shadow-sm">
+    <div className="min-h-screen max-w-380 mx-auto flex items-center justify-center bg-white px-4 shadow-lg">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-md mg-gray-50  p-6 bg-gray-950 text-white rounded-xl"
+        className="w-full max-w-md bg-gray-950 text-white p-6 rounded-2xl shadow-xl"
       >
         <h2 className="text-2xl font-bold text-center mb-6">
-          Login
+          Login Account
         </h2>
+
+        {/* Server Error */}
+        {serverError && (
+          <div className="bg-red-500 text-white text-sm p-2 rounded mb-4 text-center">
+            {serverError}
+          </div>
+        )}
 
         {/* Email */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">
-            Email
-          </label>
+          <label className="block mb-1 text-sm font-medium">Email</label>
           <input
             type="email"
             placeholder="example@gmail.com"
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none ${
-              errors.email
-                ? "border-red-500"
-                : "border-gray-300"
+            className={`w-full px-3 py-2 border rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.email ? "border-red-500" : "border-gray-600"
             }`}
             {...register("email", {
               required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Invalid email format",
-              },
             })}
           />
           {errors.email && (
@@ -66,26 +108,29 @@ const Login = () => {
 
         {/* Password */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">
-            Password
-          </label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none ${
-              errors.password
-                ? "border-red-500"
-                : "border-gray-300"
-            }`}
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message:
-                  "Password must be at least 6 characters",
-              },
-            })}
-          />
+          <label className="block mb-1 text-sm font-medium">Password</label>
+
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              className={`w-full px-3 py-2 border rounded-lg bg-gray-900 text-white pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.password ? "border-red-500" : "border-gray-600"
+              }`}
+              {...register("password", {
+                required: "Password is required",
+              })}
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
+
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">
               {errors.password.message}
@@ -95,28 +140,32 @@ const Login = () => {
 
         {/* Buttons */}
         <div className="flex gap-3 mt-6">
-         
-
           <button
             type="button"
             onClick={() => reset()}
-            className="flex-1 bg-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-300 transition cursor-pointer">
+            className="flex-1 bg-gray-300 text-black py-2 rounded-lg font-semibold hover:bg-gray-400 transition"
+          >
             Reset
           </button>
 
-           <button
+          <button
             type="submit"
-            disabled={ isSubmitting}
-            className="flex-1 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-900 transition disabled:opacity-60 cursor-pointer" >
+            disabled={isSubmitting}
+            className="flex-1 bg-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-60"
+          >
             {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </div>
-        <Link to="/forget-password" className="text-blue-500 font-semibold p-2  ">Forget password</Link>
 
-        {/* Register Link */}
-        <p className="text-sm text-center mt-5 text-gray-300  ">
-            Don't have an account?{" "}
-          <Link  to='/register' className="text-blue-500 cursor-pointer hover:underline">
+        <div className="text-right mt-3">
+          <Link to="/forget-password" className="text-blue-400 text-sm hover:underline">
+            Forget password?
+          </Link>
+        </div>
+
+        <p className="text-sm text-center mt-5 text-gray-300">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-blue-400 hover:underline">
             Sign-Up
           </Link>
         </p>
