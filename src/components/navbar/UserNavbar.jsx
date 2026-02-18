@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+import {useSelector} from 'react-redux'
 import { NavLink, Link } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
+import { RxAvatar } from "react-icons/rx";
+
 const UserNavbar = () => {
   const [open, setOpen] = useState(false);
+  const user=useSelector((state)=>state.auth.user);
+  const isAuthenticated=useSelector((state)=>state.auth.isAuthenticated);
 
 
   const navLinkClass = ({ isActive }) =>
@@ -29,14 +34,30 @@ const UserNavbar = () => {
         </ul>
 
         {/* Auth Button */}
-        <div className="hidden md:block">
+        {!isAuthenticated && user?.role !== "USER" ?<div className="hidden md:block">
           <Link
             to="/login"
             className="px-5 py-2 rounded-xl font-medium border border-gray-300 text-blue-900 hover:bg-gray-500 hover:text-white transition-all duration-300"
           >
             Login
           </Link>
-        </div>
+        </div>:
+        <div className="hidden md:block">
+  <Link
+    to="/profile"
+    className="flex items-center gap-2 px-5 py-2 rounded-full 
+               bg-white border border-gray-300 
+               text-blue-900 font-medium
+               shadow-sm hover:shadow-md
+               hover:bg-blue-900 hover:text-white
+               transition-all duration-300"
+  >
+    <RxAvatar size={22} />
+    <span>{user?.name}</span>
+  </Link>
+</div>
+
+        }
 
         {/* Mobile Button */}
         <button

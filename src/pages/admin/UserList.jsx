@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { FiEdit, FiTrash2 } from "react-icons/fi";
-// import { getAllUsers,deleteUser } from '../../service/userService'
+import {getPublicData} from '../../service/publicService';
 
 const UserList = () => {
 
   const [users, setUsers] = useState([]);
-
+  
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await getAllUsers();
-        setUsers(response.data);
+        const response = await getPublicData();
+        console.log(response);
+        setUsers(response);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -19,15 +20,7 @@ const UserList = () => {
     fetchUsers();
   }, []);
 
- const deletingUser=async (userId)=>{
-    try{
-        const deleteResponse=await deleteUser(userId);
-        console.log("Delete Response:", deleteResponse);
-        setUsers(users.filter(user=>user.id!==userId));
-    } catch(error){
-        console.error("Error deleting user:", error);
-    } 
-  }
+
    
 
   return (
@@ -43,8 +36,6 @@ const UserList = () => {
               <th className='py-3 px-6 text-left'>ID</th>
               <th className="py-3 px-6 text-left">Name</th>
               <th className="py-3 px-6 text-left">Email</th>
-              <th className="py-3 px-6 text-left">Phone</th>
-              <th className="py-3 px-6 text-left">Address</th>
               <th className="py-3 px-6 text-left">Actions</th>
             </tr>
           </thead>
@@ -55,8 +46,6 @@ const UserList = () => {
                 <td className='py-2 px-4'>{user.id}</td>
                 <td className="py-2 px-4">{user.fullName}</td>
                 <td className="py-2 px-4">{user.email}</td>
-                <td className="py-2 px-4">{user.phoneNo}</td>
-                <td className="py-2 px-4">{user.address}</td>
                 <td className="py-2 px-6">
                   <button className="text-gray-600 hover:text-blue-800 mr-3 cusrsor-pointer">
                     <FiEdit size={18} />

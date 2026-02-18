@@ -4,8 +4,11 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { loginService } from "../../service/authService";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import {useDispatch} from 'react-redux';
+import {loginSuccess} from '../../features/auth/authSlice'
 
 const Login = () => {
+  const dispatch=useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -26,6 +29,8 @@ const onSubmit = async (data) => {
 
   try {
     const response = await loginService(data);
+    const logedData={name:response.data.name,role:response.data.role}
+    dispatch(loginSuccess(logedData));
 
     if (response.status === 200) {
       toast.success(response.data.message);
