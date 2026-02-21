@@ -145,7 +145,7 @@ const Register = () => {
             })}
           >
             <option value="">Select Role</option>
-            <option value="USER">USER</option>
+            <option value="TENANT">TENANT</option>
             <option value="OWNER">OWNER</option>
           </select>
           {errors.role && (
@@ -168,7 +168,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 bg-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-60"
+            className="flex-1 bg-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSubmitting ? "Registering..." : "Register"}
           </button>

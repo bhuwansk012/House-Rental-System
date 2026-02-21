@@ -3,6 +3,7 @@ import axios from 'axios';
 
 //Register Service
 export const registerService = async (regData) => {
+  console.log(regData);
   const response = await axios.post(REGISTER_END_POINT, regData);
   return response;
 };

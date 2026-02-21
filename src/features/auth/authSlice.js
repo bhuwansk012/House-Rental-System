@@ -13,6 +13,7 @@ initialState,
 reducers: {
     loginSuccess:(state,action)=>{
         state.user=action.payload;
+        console.log(action.payload);
         state.isAuthenticated=true;
     },
     logout:(state)=>{

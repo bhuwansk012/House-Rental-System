@@ -34,7 +34,7 @@ const UserNavbar = () => {
         </ul>
 
         {/* Auth Button */}
-        {!isAuthenticated && user?.role !== "USER" ?<div className="hidden md:block">
+        {!isAuthenticated && user?.role !== "TENANT" ?<div className="hidden md:block">
           <Link
             to="/login"
             className="px-5 py-2 rounded-xl font-medium border border-gray-300 text-blue-900 hover:bg-gray-500 hover:text-white transition-all duration-300"

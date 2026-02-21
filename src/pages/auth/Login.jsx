@@ -29,12 +29,12 @@ const onSubmit = async (data) => {
 
   try {
     const response = await loginService(data);
-    const logedData={name:response.data.name,role:response.data.role}
+    const logedData={id:response.data.id,name:response.data.fullName,role:response.data.role}
     dispatch(loginSuccess(logedData));
-
+    
     if (response.status === 200) {
       toast.success(response.data.message);
-
+      console.log(response.data);
       // Save token
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
@@ -148,7 +148,7 @@ const onSubmit = async (data) => {
           <button
             type="button"
             onClick={() => reset()}
-            className="flex-1 bg-gray-300 text-black py-2 rounded-lg font-semibold hover:bg-gray-400 transition"
+            className="flex-1 bg-gray-300 text-black py-2 rounded-lg font-semibold hover:bg-gray-400 transition cursor-pointer "
           >
             Reset
           </button>
@@ -156,7 +156,7 @@ const onSubmit = async (data) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 bg-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-60"
+            className="flex-1 bg-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
           >
             {isSubmitting ? "Logging in..." : "Login"}
           </button>

@@ -13,6 +13,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    console.log(user);
     toast.success("Logged out successfully!");
     navigate("/");
   };
@@ -35,7 +36,7 @@ const Profile = () => {
           <RxAvatar size={80} className="text-blue-900 mb-4" />
           
           <h2 className="text-2xl font-bold text-gray-800">
-            {user.name}
+            {user.fullName}
           </h2>
 
           <p className="text-gray-500 mt-2">
