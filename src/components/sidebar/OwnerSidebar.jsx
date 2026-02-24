@@ -28,7 +28,6 @@ const OwnerSidebar = ({ isOpen }) => {
         {[
           { to: "/owner/dashboard", icon: <FaHome />, label: "Dashboard" },
           { to: "/owner/my-property", icon: <FaBuilding />, label: "My Property" },
-          { to: "/owner/add-property", icon: <FaPlus />, label: "Add Property" },
           { to: "/owner/bookings", icon: <FaBook />, label: "Bookings" },
           { to: "/owner/notifications", icon: <FaBell />, label: "Notifications" },
           { to: "/owner/payments", icon: <FaMoneyBill />, label: "Payments" },

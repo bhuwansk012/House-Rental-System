@@ -17,27 +17,9 @@ const AdminNavbar = () => {
         Welcome to Administrattor Dashboard
       </h1>
       </div>
-      <div className="relative flex items-center">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-72 rounded-full px-4 py-2 pr-12 bg-white border border-gray-200 text-sm text-gray-600
-               focus:outline-none focus:ring-2 focus:ring-purple-700
-               transition-all"
-        />
-
-        <button
-          type="submit"
-          className="absolute right-4 text-blue-900 
-               cursor-pointer
-               hover:text-black
-               transition-colors duration-200"
-        >
-          <IoIosSearch size={25} />
-        </button>
-      </div>
       
-      <div> <Link
+      <div> 
+        <Link
       to="/profile"
       className="flex items-center px-5 py-2 rounded-full border border-blue-900 
                  text-blue-900 font-semibold hover:bg-blue-900 hover:text-white 

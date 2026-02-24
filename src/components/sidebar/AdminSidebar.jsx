@@ -27,7 +27,7 @@ const AdminSidebar = () => {
         }`;
 
     return (
-        <aside className="w-60 bg-purple-950 shadow h-screen pl-4 text-white">
+        <aside className="w-50 bg-purple-950 shadow h-screen pl-4 text-white">
             <div className='m-1 p-1'>
                 <h2 className="text-xl font-bold mb-6 text-white">
                     House Rental System

@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiUsers, FiHome, FiKey, FiCalendar } from "react-icons/fi";
+import { toast } from "react-toastify";
+import { getAdminData } from "../../service/adminService";
 import {
   BarChart,
   Bar,
@@ -12,95 +14,100 @@ import {
   Cell,
 } from "recharts";
 
-const recentProperties = [
-  {
-    id: 1,
-    name: "2BHK Apartment - Baneshwor",
-    owner: "Ram Sharma",
-    rent: "Rs. 25,000",
-    date: "2026-02-01",
-    status: "Available",
-  },
-  {
-    id: 2,
-    name: "1BHK Flat - Lalitpur",
-    owner: "Sita Thapa",
-    rent: "Rs. 18,000",
-    date: "2026-01-30",
-    status: "Booked",
-  },
-  {
-    id: 3,
-    name: "3BHK House - Bhaktapur",
-    owner: "Hari KC",
-    rent: "Rs. 40,000",
-    date: "2026-01-28",
-    status: "Available",
-  },
-];
-
-
-const stats = [
-  {
-    title: "Total Tenants",
-    value: 120,
-    icon: <FiUsers size={28} />,
-    bg: "bg-blue-100",
-    text: "text-blue-600",
-  },
-  {
-    title: "Total Owners",
-    value: 35,
-    icon: <FiKey size={28} />,
-    bg: "bg-green-100",
-    text: "text-green-600",
-  },
-  {
-    title: "Total Properties",
-    value: 150,
-    icon: <FiHome size={28} />,
-    bg: "bg-purple-100",
-    text: "text-purple-600",
-  },
-  {
-    title: "Total Bookings",
-    value: 210,
-    icon: <FiCalendar size={28} />,
-    bg: "bg-orange-100",
-    text: "text-orange-600",
-  },
-];
-
-/* Chart Data */
-const barData = [
-  { name: "Tenants", total: 120 },
-  { name: "Owners", total: 35 },
-  { name: "Properties", total: 150 },
-  { name: "Bookings", total: 210 },
-];
-
-const pieData = [
-  { name: "Booked", value: 140 },
-  { name: "Available", value: 10 },
-];
-
 const COLORS = ["#7c3aed", "#ddd6fe"];
 
 const AdminDashboard = () => {
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const data = await getAdminData();
+
+        setDashboardData(data);
+      
+      } catch (error) {
+        const status = error.response?.status;
+
+        if (status === 401) toast.error("Unauthorized Access");
+        else if (status === 403) toast.error("Access Denied");
+        else if (status === 500) toast.error("Server Error");
+        else toast.error("Something went wrong!");
+
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return <div className="p-6 text-lg font-semibold text-center items-center ">Loading Dashboard...</div>;
+  }
+
+  if (!dashboardData) {
+    return <div className="p-6 text-red-500">No Data Available</div>;
+  }
+
+  // 
+  const stats = [
+    {
+      title: "Total Tenants",
+      value: dashboardData.totalTenants || 0,
+      icon: <FiUsers size={28} />,
+      bg: "bg-blue-100",
+      text: "text-blue-600",
+    },
+    {
+      title: "Total Owners",
+      value: dashboardData.totalOwners || 0,
+      icon: <FiKey size={28} />,
+      bg: "bg-green-100",
+      text: "text-green-600",
+    },
+    {
+      title: "Total Properties",
+      value: dashboardData.totalProperties || 0,
+      icon: <FiHome size={28} />,
+      bg: "bg-purple-100",
+      text: "text-purple-600",
+    },
+    {
+      title: "Total Bookings",
+      value: dashboardData.totalBookings || 0,
+      icon: <FiCalendar size={28} />,
+      bg: "bg-orange-100",
+      text: "text-orange-600",
+    },
+  ];
+
+  const barData = [
+    { name: "Tenants", total: dashboardData.totalTenants || 0 },
+    { name: "Owners", total: dashboardData.totalOwners || 0 },
+    { name: "Properties", total: dashboardData.totalProperties || 0 },
+    { name: "Bookings", total: dashboardData.totalBookings || 0 },
+  ];
+
+  const pieData = [
+    { name: "Booked", value: dashboardData.bookedProperties || 0 },
+    { name: "Available", value: dashboardData.availableProperties || 0 },
+  ];
+
   return (
     <div className="m-4 space-y-10">
-      {/* Page Title */}
       <h1 className="text-3xl font-bold mb-6 text-blue-900 pl-2">
         Admin Dashboard
       </h1>
 
-      {/* Stats Cards (UNCHANGED STYLE) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((item, index) => (
           <div
             key={index}
-            className="hover:bg-purple-800 hover:text-white rounded-xl shadow-sm p-5 flex text-purple-900
-            items-center justify-between border border-gray-200 transition-colors duration-300 hover:z-10 w-80 cursor-pointer"
+            className="hover:bg-purple-800 hover:text-white rounded-xl shadow-md p-5 flex text-purple-900
+            items-center justify-between border border-gray-200 transition-all duration-300 cursor-pointer"
           >
             <div>
               <p className="text-lg font-bold">{item.title}</p>
@@ -116,30 +123,26 @@ const AdminDashboard = () => {
         ))}
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Bar Chart */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5 lg:col-span-2 ">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 lg:col-span-2 shadow-md">
           <h2 className="text-lg font-bold text-purple-900 mb-4">
             System Overview
           </h2>
 
-          <ResponsiveContainer width="80%" height={300}>
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barData}>
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar
-                dataKey="total"
-                fill="#7c3aed"
-                radius={[5, 5, 0, 0]}
-              />
+              <Bar dataKey="total" fill="#7c3aed" radius={[5, 5, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Pie Chart */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-md">
           <h2 className="text-lg font-bold text-purple-900 mb-4">
             Property Status
           </h2>
