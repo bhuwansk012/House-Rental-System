@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { MdOutlineSpaceDashboard } from "react-icons/md";
-import { FaAddressBook, FaUsers } from "react-icons/fa";
+import { FaAddressBook, FaUsers,FaUser } from "react-icons/fa";
 import { BsHousesFill } from "react-icons/bs";
 import { GrUserAdmin } from "react-icons/gr";
 import { IoLogOut } from "react-icons/io5";
@@ -58,6 +58,10 @@ const AdminSidebar = () => {
                 <NavLink to="/admin/owners" className={linkclass}>
                     <GrUserAdmin className="inline mr-2" />
                     Owners
+                </NavLink>
+                <NavLink to="/admin/profile" className={linkclass}>
+                    <FaUser className="inline mr-2" />
+                   Profile
                 </NavLink>
 
                 {/*Properly Closed Button */}

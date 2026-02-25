@@ -3,7 +3,7 @@ import api from "./api";
 const property_add_url = "/owner/add";
 const get_property_by_owner = "/owner/my-properties";
 
-// ADD PROPERTY
+//aading propety
 export const addProperty = async (formData) => {
   const response = await api.post(property_add_url, formData, {
     headers: { "Content-Type": "multipart/form-data" },

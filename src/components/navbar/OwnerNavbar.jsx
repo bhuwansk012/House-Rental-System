@@ -1,8 +1,10 @@
 import React from "react";
 import { RxAvatar } from "react-icons/rx";
 import { HiMenu } from "react-icons/hi";
+import {useSelector,useDispatch} from 'react-redux'
 
 const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
+  const user=useSelector((state)=>state.auth.user);
   return (
     <div
       className={`fixed top-0 h-16 bg-white shadow flex items-center justify-between px-6 z-50 transition-all duration-300
@@ -25,7 +27,7 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
       {/* Right Section */}
       <div className="flex items-center space-x-3 cursor-pointer bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200 transition">
         <RxAvatar size={28} />
-        <span className="font-medium text-gray-700">Owner</span>
+        <span className="font-medium text-gray-700">{user.name}</span>
       </div>
     </div>
   );

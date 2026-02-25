@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Forget from '../pages/auth/forget'
-import Profile from '../pages/auth/Profile'
+import Profile from '../pages/user/Profile'
 import Login from "../pages/auth/Login";
 import Register from '../pages/auth/Register'
 import Home from "../pages/user/Home";
@@ -26,13 +26,14 @@ import PropertyList from "../pages/admin/PropertyList";
 import BookingList from "../pages/admin/bookingList";
 import OwnerList from "../pages/admin/OwnerList";
 import PropertyDetails from "../pages/user/PropertyDetails";
+import AdminProfile from '../pages/admin/AdminProfile'
 
 function AppRoutes() {
   return (
     <Routes>
      
       <Route path="/forget-password" element={<Forget/>}/>
-      <Route path='/profile' element={<Profile/>}/>
+    
 
       {/* User Routes */}
       <Route element={<UserLayout />}>
@@ -42,6 +43,7 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register/>}/>
         <Route path="/property-details" element={<PropertyDetails/>}/>
+        <Route path='/profile' element={<Profile/>}/>
       </Route>
 
       {/* Owner Routes */}
@@ -64,6 +66,7 @@ function AppRoutes() {
         <Route path="/admin/properties" element={<PropertyList />} />
         <Route path="/admin/bookings" element={<BookingList />} />
         <Route path="/admin/owners" element={<OwnerList />} />
+        <Route path="/admin/profile" element={<AdminProfile/>}/>
       </Route>
       
     </Routes>
