@@ -38,7 +38,7 @@ const AddProperty = () => {
       Object.keys(data).forEach((key) => formData.append(key, data[key]));
       selectedFiles.forEach(file => formData.append("images", file));
       await addProperty(formData);
-      toast.success("Property Added Successfully 🎉");
+      toast.success("Property Added Successfully");
       reset();
       setSelectedFiles([]);
       setTimeout(() => navigate("/owner/my-property"), 1500);

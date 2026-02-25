@@ -1,214 +1,188 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import axios from "axios";
+import { useSelector,useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
 import { RxAvatar } from "react-icons/rx";
+import { getProfile, updateProfile } from "../../service/profileService";
 
 const OwnerProfile = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const authUser = useSelector((state) => state.auth.user);
 
-  const [profile, setProfile] = useState(null);
+  const user = useSelector((state) => state.auth.user);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const [profileData, setProfileData] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const role = user?.role;
+
+  
+  const { register, handleSubmit, setValue, watch } = useForm();
+
+  // Watch for file input to show preview
+  const watchImage = watch("image");
 
   useEffect(() => {
-    fetchOwnerProfile();
-  }, []);
+    const fetchProfile = async () => {
+      if (role === "OWNER") {
+        try {
+          const data = await getProfile();
+          console.log(data);
+          const updatedData = {
+            ...data,
+            image: data.images
+              ? `http://localhost:8080${data.images}`
+              : null,
+          };
+        
+          setProfileData(updatedData);
+          
+          setValue("phone", data?.phone || "");
+          setValue("address", data?.address || "");
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+        }
+      }
+    };
+    fetchProfile();
+  }, [role, user, setValue]);
 
-  const fetchOwnerProfile = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/api/owner/profile/${authUser.id}`
-      );
-      setProfile(res.data);
-    } catch (err) {
-      toast.error("Failed to load owner profile");
-    }
-  };
-
-  const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
-  };
-
-  const handleImageChange = (e) => {
-    setSelectedImage(e.target.files[0]);
-  };
-
-  const handleUpdate = async () => {
+  const onSubmit = async (data) => {
     try {
       const formData = new FormData();
-      Object.keys(profile).forEach((key) => {
-        formData.append(key, profile[key]);
-      });
-
-      if (selectedImage) {
-        formData.append("image", selectedImage);
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("phone", data.phone);
+      formData.append("address", data.address);
+      if (data.image && data.image[0]) {
+        formData.append("image", data.image[0]);
       }
 
-      await axios.put(
-        `http://localhost:8080/api/owner/profile/update/${authUser.id}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
-      toast.success("Profile updated successfully!");
+      await updateProfile(formData);
+      alert("Profile updated successfully!");
       setEditMode(false);
-      fetchOwnerProfile();
-    } catch (err) {
-      toast.error("Update failed");
+
+      // Refresh profile
+      const refreshed = await getProfile();
+      setProfileData({
+        ...refreshed,
+        image: refreshed.images
+          ? `http://localhost:8080${refreshed.images}`
+          : null,
+      });
+    } catch (error) {
+      console.error("Update failed:", error);
+      alert("Failed to update profile.");
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    toast.success("Logged out successfully!");
-    navigate("/");
-  };
-
-  if (!profile) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-lg font-semibold text-gray-600">Loading...</p>
-      </div>
-    );
-  }
+  if (role !== "OWNER" || !isAuthenticated) return null;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-100 to-gray-200 p-6 flex justify-center items-center">
-      <div className="bg-white w-full max-w-4xl shadow-2xl rounded-3xl p-8">
+    <div className="p-4 max-w-md mx-auto bg-white shadow rounded">
+      <h2 className="text-3xl font-bold mb-6">Owner Profile</h2>
 
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-
-          {/* Profile Image */}
-          <div className="flex flex-col items-center">
-            {profile.imageUrl ? (
-              <img
-                src={`http://localhost:8080${profile.imageUrl}`}
-                alt="Owner"
-                className="w-36 h-36 rounded-full object-cover border-4 border-indigo-500 shadow-lg"
-              />
-            ) : (
-              <RxAvatar size={140} className="text-indigo-400" />
-            )}
-
-            {editMode && (
-              <input
-                type="file"
-                onChange={handleImageChange}
-                className="mt-3"
-              />
-            )}
+      {/* Profile Image */}
+      <div className="flex justify-center mb-4">
+        {watchImage?.length > 0 ? (
+          <img
+            src={URL.createObjectURL(watchImage[0])}
+            alt="Preview"
+            className="w-32 h-32 rounded-full object-cover"
+          />
+        ) : profileData?.image ? (
+          <img
+            src={profileData.image}
+            alt="Profile"
+            className="w-32 h-32 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-32 h-32 flex items-center justify-center text-8xl bg-gray-200 rounded-full">
+            <RxAvatar />
           </div>
-
-          {/* Basic Info */}
-          <div className="flex-1">
-            <h2 className="text-3xl font-bold text-gray-800">
-              {profile.fullName}
-            </h2>
-            <p className="text-gray-500 mt-1">{profile.email}</p>
-            <p className="text-gray-500">{profile.phone}</p>
-            <p className="text-gray-500">{profile.address}</p>
-
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-              <div className="bg-indigo-50 p-3 rounded-xl shadow-sm">
-                <p className="font-semibold text-indigo-600">
-                  Total Properties
-                </p>
-                <p className="text-lg font-bold">{profile.totalProperties}</p>
-              </div>
-
-              <div className="bg-green-50 p-3 rounded-xl shadow-sm">
-                <p className="font-semibold text-green-600">
-                  Total Earnings
-                </p>
-                <p className="text-lg font-bold">
-                  Rs. {profile.totalEarnings}
-                </p>
-              </div>
-
-              <div className="bg-yellow-50 p-3 rounded-xl shadow-sm">
-                <p className="font-semibold text-yellow-600">
-                  Account Status
-                </p>
-                <p className="font-bold">{profile.status}</p>
-              </div>
-
-              <div className="bg-blue-50 p-3 rounded-xl shadow-sm">
-                <p className="font-semibold text-blue-600">
-                  Joined Date
-                </p>
-                <p className="font-bold">{profile.joinedDate}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Editable Fields */}
-        <div className="mt-8 grid md:grid-cols-2 gap-6">
-          <div>
-            <label className="font-semibold">Citizenship No</label>
-            <input
-              type="text"
-              name="citizenshipNo"
-              value={profile.citizenshipNo || ""}
-              onChange={handleChange}
-              disabled={!editMode}
-              className="w-full mt-1 p-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="font-semibold">Agency Name</label>
-            <input
-              type="text"
-              name="agencyName"
-              value={profile.agencyName || ""}
-              onChange={handleChange}
-              disabled={!editMode}
-              className="w-full mt-1 p-2 border rounded-lg"
-            />
-          </div>
-        </div>
-
-        {/* Buttons */}
-        <div className="mt-8 flex flex-wrap gap-4">
-          {editMode ? (
-            <button
-              onClick={handleUpdate}
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-xl"
-            >
-              Save Changes
-            </button>
-          ) : (
-            <button
-              onClick={() => setEditMode(true)}
-              className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-xl"
-            >
-              Edit Profile
-            </button>
-          )}
-
-          <button
-            onClick={() => navigate("/change-password")}
-            className="bg-gray-700 hover:bg-gray-800 text-white px-6 py-2 rounded-xl"
-          >
-            Change Password
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl"
-          >
-            Logout
-          </button>
-        </div>
-
+        )}
       </div>
+
+      {/* Display Mode */}
+      {!editMode ? (
+        <>
+          <div className="space-y-2 text-lg mb-4">
+            <p>
+              <strong>Name:</strong> {user?.name || "Not set"}
+            </p>
+            <p>
+              <strong>Email:</strong> {user?.email || "Not set"}
+            </p>
+            <p>
+              <strong>Phone:</strong> {profileData?.phone || "Not set"}
+            </p>
+            <p>
+              <strong>Address:</strong> {profileData?.address || "Not set"}
+            </p>
+          </div>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            onClick={() => setEditMode(true)}
+          >
+            Update Profile
+          </button>
+        </>
+      ) : (
+        /* Edit Form */
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+          <div>
+            <label className="block mb-1 font-medium">Name</label>
+            <input
+              type="text"
+              {...register("name", { required: true })}
+              className="w-full border px-2 py-1 rounded"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Email</label>
+            <input
+              type="email"
+              {...register("email", { required: true })}
+              className="w-full border px-2 py-1 rounded"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Phone</label>
+            <input
+              type="text"
+              {...register("phone")}
+              className="w-full border px-2 py-1 rounded"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Address</label>
+            <input
+              type="text"
+              {...register("address")}
+              className="w-full border px-2 py-1 rounded"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Profile Image</label>
+            <input
+              type="file"
+              {...register("image")}
+              accept="image/*"
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+              onClick={() => setEditMode(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 };

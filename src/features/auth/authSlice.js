@@ -16,6 +16,10 @@ reducers: {
         console.log(action.payload);
         state.isAuthenticated=true;
     },
+    updateAuth:(state, action)=>{
+        state.isAuthenticated=true;
+        state.user=action.payload;
+    },
     logout:(state)=>{
         state.user=null;
         state.isAuthenticated=false;
@@ -24,5 +28,5 @@ reducers: {
 },
 });
 
-export const {loginSuccess,logout} =authSlice.actions;
+export const {loginSuccess,logout,updateAuth} =authSlice.actions;
 export default authSlice.reducer;
