@@ -1,6 +1,6 @@
 import api from "./api";
 
-const property_add_url = "/owner/add";
+const property_add_url = "/owner/add-property";
 const get_property_by_owner = "/owner/my-properties";
 
 //aading propety

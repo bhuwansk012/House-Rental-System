@@ -1,16 +1,14 @@
-import api from './api';
+import axios from 'axios';
+import {PUBLIC_PROPERTY_URL} from '../service/url';
+import {SINGLE_PROPERTY_URL} from '../service/url'
 
-export const getPublicData = async () => {
-    try 
-    {
-        const response = await api.get('/all');
-        return response.data;
-        // console.log('Public data fetched successfully:', response.data);
-    } 
-    catch (error) 
-    {
-        console.error('Error fetching public data:', error);
-        throw error;
-    }   
+export const getProperty =async()=>{
+    const response=await axios.get(PUBLIC_PROPERTY_URL);
+    return response;
 };
+
+export  const  getPropertyById=async(id)=>{
+    const response =await axios.get(SINGLE_PROPERTY_URL+`${id}`);
+    return response;
+}
 

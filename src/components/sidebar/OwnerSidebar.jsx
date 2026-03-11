@@ -1,4 +1,5 @@
 import React from "react";
+import {useSelector} from 'react-redux'
 import { NavLink } from "react-router-dom";
 import {
   FaHome,
@@ -12,6 +13,7 @@ import {
 } from "react-icons/fa";
 
 const OwnerSidebar = ({ isOpen }) => {
+  const user = useSelector((state) => state.auth.user);
   return (
     <div
       className={`fixed top-0 left-0 h-screen bg-white shadow-lg border-r 

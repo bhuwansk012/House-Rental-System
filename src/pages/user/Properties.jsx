@@ -1,19 +1,37 @@
-import React, { useState } from "react";
-import { data } from "../../data/data";
+import React, { useState, useEffect } from "react";
 import PropertyCard from "../../components/Card/PropertyCard";
+import { getProperty } from "../../service/publicService";
 
-const categories = ["All", "House", "Apartment", "Room"];
+const categories = ["All", "HOUSE", "APARTMENT", "ROOM"];
 
 const Properties = () => {
+  const [data, setData] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
 
+  const fetchProperty = async () => {
+    try {
+      const response = await getProperty();
+
+      const updated = response.data.map((item) => ({
+        ...item,
+        imageUrl: `http://localhost:8080/uploads/properties/${item.imageUrl}`,
+      }));
+
+      setData(updated);
+    } catch (error) {
+      console.error("Error fetching properties:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProperty();
+  }, []);
+
+  // Filter Logic
   const filteredData =
     activeCategory === "All"
       ? data
-      : data.filter(
-          (item) =>
-            item.name?.toLowerCase() === activeCategory.toLowerCase()
-        );
+      : data.filter((item) => item.type === activeCategory);
 
   return (
     <section className="max-w-380 mx-auto px-6 py-12 shadow">
@@ -38,8 +56,7 @@ const Properties = () => {
                 activeCategory === cat
                   ? "bg-blue-600 text-white shadow-md"
                   : "bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-              }
-            `}
+              }`}
           >
             {cat}
           </button>
@@ -49,8 +66,8 @@ const Properties = () => {
       {/* Property Grid */}
       {filteredData.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredData.map((item, index) => (
-            <PropertyCard key={index} item={item} />
+          {filteredData.map((item) => (
+            <PropertyCard key={item.id} item={item} />
           ))}
         </div>
       ) : (

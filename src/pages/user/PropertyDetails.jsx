@@ -1,44 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   FaMapMarkerAlt,
   FaBed,
   FaBath,
   FaRulerCombined,
+  FaCar,
+  FaCouch,
 } from "react-icons/fa";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { getPropertyById } from "../../service/publicService";
 
-/* ------------------ DEMO DATA ------------------ */
-const demoProperty = {
-  id: 1,
-  title: "Modern 2BHK Apartment",
-  price: "Rs. 25,000 / month",
-  location: "New Baneshwor, Kathmandu",
-  status: "Available",
-  beds: 2,
-  baths: 1,
-  area: "950 sq.ft",
-  description:
-    "This modern 2BHK apartment is located in the prime area of New Baneshwor. Ideal for families and professionals with easy access to schools, hospitals, and public transport.",
-  amenities: [
-    "Parking",
-    "24/7 Water Supply",
-    "Balcony",
-    "Security",
-    "Lift",
-  ],
-  owner: {
-    name: "Ram Prasad Sharma",
-    phone: "98XXXXXXXX",
-    email: "owner@example.com",
-  },
-  images: [
-    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
-    "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
-    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
-  ],
-};
-
-/* ------------------ MAP STYLE ------------------ */
 const mapContainerStyle = {
   width: "100%",
   height: "350px",
@@ -46,80 +18,133 @@ const mapContainerStyle = {
 };
 
 const PropertyDetails = () => {
+  const { id } = useParams();
+  const [property, setProperty] = useState(null);
   const [position, setPosition] = useState(null);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
   });
 
-  /* -------- Convert Location Name → Lat/Lng -------- */
+  /* ---------------- FETCH PROPERTY ---------------- */
   useEffect(() => {
-    if (!isLoaded || !window.google) return;
+    const fetchProperty = async () => {
+      try {
+        const response = await getPropertyById(id);
+
+        const updated = {
+          ...response.data,
+          imageUrl: `http://localhost:8080/uploads/properties/${response.data.imageUrl}`,
+        };
+
+        setProperty(updated);
+      } catch (error) {
+        console.error("Error fetching property:", error);
+      }
+    };
+
+    fetchProperty();
+  }, [id]);
+
+  /* ---------------- GEOCODE LOCATION ---------------- */
+  useEffect(() => {
+    if (!isLoaded || !window.google || !property) return;
 
     const geocoder = new window.google.maps.Geocoder();
-    geocoder.geocode(
-      { address: demoProperty.location },
-      (results, status) => {
-        if (status === "OK") {
-          const { lat, lng } = results[0].geometry.location;
-          setPosition({ lat: lat(), lng: lng() });
-        }
+
+    const fullAddress = `${property.tole}, ${property.municipality}, ${property.district}`;
+
+    geocoder.geocode({ address: fullAddress }, (results, status) => {
+      if (status === "OK") {
+        const { lat, lng } = results[0].geometry.location;
+        setPosition({ lat: lat(), lng: lng() });
       }
-    );
-  }, [isLoaded]);
+    });
+  }, [isLoaded, property]);
+
+  if (!property) {
+    return <p className="text-center py-10">Loading property...</p>;
+  }
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-10">
+    <section className="max-w-380 shadow mx-auto px-6 py-10 bg-gray-100">
       {/* ---------------- TITLE ---------------- */}
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">
-            {demoProperty.title}
+            {property.title}
           </h1>
+
           <p className="flex items-center gap-2 text-gray-600 mt-2">
             <FaMapMarkerAlt className="text-blue-600" />
-            {demoProperty.location}
+            {property.tole}, {property.municipality}, {property.district}
           </p>
         </div>
 
         <div className="text-right">
           <p className="text-2xl font-semibold text-blue-600">
-            {demoProperty.price}
+            Rs. {property.price}
           </p>
-          <span className="inline-block mt-2 px-4 py-1 rounded-full bg-green-100 text-green-700 text-sm">
-            {demoProperty.status}
+
+          <span
+            className={`inline-block mt-2 px-4 py-1 rounded-full text-sm
+              ${
+                property.bookingStatus === "AVAILABLE"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }
+            `}
+          >
+            {property.bookingStatus}
           </span>
         </div>
       </div>
 
-      {/* ---------------- IMAGES ---------------- */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-        {demoProperty.images.map((img, index) => (
-          <img
-            key={index}
-            src={img}
-            alt="Property"
-            className="w-full h-64 object-cover rounded-xl"
-          />
-        ))}
+      {/* ---------------- IMAGE ---------------- */}
+      <div className="mb-10">
+        <img
+          src={property.imageUrl}
+          alt={property.title}
+          className="w-full h-105 object-cover rounded-xl shadow"
+        />
       </div>
 
-      {/* ---------------- DETAILS ---------------- */}
+      {/* ---------------- DETAILS SECTION ---------------- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* LEFT */}
+
+        {/* LEFT SIDE */}
         <div className="md:col-span-2 space-y-6">
+
           {/* FEATURES */}
           <div className="bg-white shadow rounded-xl p-6">
-            <h2 className="text-xl font-semibold mb-4">Property Details</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Property Details
+            </h2>
+
             <div className="flex flex-wrap gap-6 text-gray-700">
               <div className="flex items-center gap-2">
-                <FaBed className="text-blue-600" /> {demoProperty.beds} Bedrooms
+                <FaBed className="text-blue-600" />
+                {property.bedrooms} Bedrooms
               </div>
+
               <div className="flex items-center gap-2">
-                <FaBath className="text-blue-600" /> {demoProperty.baths} Bathroom
+                <FaBath className="text-blue-600" />
+                {property.bathrooms} Bathrooms
               </div>
+
               <div className="flex items-center gap-2">
-                <FaRulerCombined className="text-blue-600" /> {demoProperty.area}
+                <FaRulerCombined className="text-blue-600" />
+                {property.area} sqft
+              </div>
+
+              <div className="flex items-center gap-2">
+                <FaCouch className="text-blue-600" />
+                {property.furnished ? "Furnished" : "Not Furnished"}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <FaCar className="text-blue-600" />
+                {property.parkingAvailable ? "Parking Available" : "No Parking"}
               </div>
             </div>
           </div>
@@ -128,39 +153,26 @@ const PropertyDetails = () => {
           <div className="bg-white shadow rounded-xl p-6">
             <h2 className="text-xl font-semibold mb-3">Description</h2>
             <p className="text-gray-600 leading-relaxed">
-              {demoProperty.description}
+              {property.description || "No description provided."}
             </p>
-          </div>
-
-          {/* AMENITIES */}
-          <div className="bg-white shadow rounded-xl p-6">
-            <h2 className="text-xl font-semibold mb-4">Amenities</h2>
-            <ul className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {demoProperty.amenities.map((item, index) => (
-                <li
-                  key={index}
-                  className="bg-gray-100 px-4 py-2 rounded-lg text-gray-700"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
 
-        {/* RIGHT */}
+        {/* RIGHT SIDE */}
         <div className="bg-white shadow rounded-xl p-6 h-fit">
-          <h2 className="text-xl font-semibold mb-4">Owner Information</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Owner Information
+          </h2>
+
           <p className="font-medium text-gray-700">
-            {demoProperty.owner.name}
+            {property.ownerName}
           </p>
-          <p className="text-gray-600 mt-1">📞 {demoProperty.owner.phone}</p>
-          <p className="text-gray-600 mt-1">✉️ {demoProperty.owner.email}</p>
 
           <div className="mt-6 space-y-3">
             <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
               Contact Owner
             </button>
+
             <button className="w-full border border-blue-600 text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition">
               Book Visit
             </button>
@@ -168,9 +180,11 @@ const PropertyDetails = () => {
         </div>
       </div>
 
-      {/* ---------------- GOOGLE MAP (LAST) ---------------- */}
+      {/* ---------------- GOOGLE MAP ---------------- */}
       <div className="bg-white shadow rounded-xl p-6 mt-10">
-        <h2 className="text-xl font-semibold mb-4">Property Location</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          Property Location
+        </h2>
 
         {!isLoaded && <p>Loading map...</p>}
 

@@ -42,7 +42,7 @@ function AppRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register/>}/>
-        <Route path="/property-details" element={<PropertyDetails/>}/>
+        <Route path="/property-details/:id" element={<PropertyDetails/>}/>
         <Route path='/profile' element={<Profile/>}/>
       </Route>
 

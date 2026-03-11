@@ -1,187 +1,138 @@
 import React, { useEffect, useState } from "react";
 import { useSelector,useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { RxAvatar } from "react-icons/rx";
+import {useNavigate} from "react-router-dom"
 import { getProfile, updateProfile } from "../../service/profileService";
+import ProfileSection from "../../components/profile/ProfileSection";
+import {logout} from '../../features/auth/authSlice'
 
 const OwnerProfile = () => {
-
+  const navigate=useNavigate();
   const user = useSelector((state) => state.auth.user);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch=useDispatch();
+  const [formOpen, setFormOpen] = useState(false);
   const [profileData, setProfileData] = useState(null);
-  const [editMode, setEditMode] = useState(false);
-  const role = user?.role;
 
-  
-  const { register, handleSubmit, setValue, watch } = useForm();
-
-  // Watch for file input to show preview
-  const watchImage = watch("image");
-
+  const { register, handleSubmit, reset } = useForm();
+    const  handleLogout=()=>{
+      dispatch(logout())
+      navigate("/login")
+    }
   useEffect(() => {
     const fetchProfile = async () => {
-      if (role === "OWNER") {
-        try {
-          const data = await getProfile();
-          console.log(data);
-          const updatedData = {
-            ...data,
-            image: data.images
-              ? `http://localhost:8080${data.images}`
-              : null,
-          };
-        
-          setProfileData(updatedData);
-          
-          setValue("phone", data?.phone || "");
-          setValue("address", data?.address || "");
-        } catch (error) {
-          console.error("Error fetching profile:", error);
-        }
+      try {
+        const data = await getProfile();
+
+        const formattedData = {
+          ...data,
+          image: data.images
+            ? `http://localhost:8080${data.images}`
+            : null,
+        };
+
+        setProfileData(formattedData);
+        reset(formattedData); // auto fill form
+      } catch (error) {
+        console.error(error);
       }
     };
-    fetchProfile();
-  }, [role, user, setValue]);
+
+    if (isAuthenticated) fetchProfile();
+  }, [isAuthenticated, user, reset]);
 
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
+
       formData.append("name", data.name);
-      formData.append("email", data.email);
+      formData.append("age", data.age);
       formData.append("phone", data.phone);
       formData.append("address", data.address);
+      formData.append("dateOfBirth", data.dateOfBirth);
+
       if (data.image && data.image[0]) {
         formData.append("image", data.image[0]);
       }
 
       await updateProfile(formData);
-      alert("Profile updated successfully!");
-      setEditMode(false);
+      alert("Profile Updated Successfully");
 
-      // Refresh profile
-      const refreshed = await getProfile();
-      setProfileData({
-        ...refreshed,
-        image: refreshed.images
-          ? `http://localhost:8080${refreshed.images}`
-          : null,
-      });
-    } catch (error) {
-      console.error("Update failed:", error);
-      alert("Failed to update profile.");
+      setFormOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Update Failed");
     }
   };
 
-  if (role !== "OWNER" || !isAuthenticated) return null;
+  if (!isAuthenticated) return null;
 
   return (
-    <div className="p-4 max-w-md mx-auto bg-white shadow rounded">
-      <h2 className="text-3xl font-bold mb-6">Owner Profile</h2>
-
-      {/* Profile Image */}
-      <div className="flex justify-center mb-4">
-        {watchImage?.length > 0 ? (
-          <img
-            src={URL.createObjectURL(watchImage[0])}
-            alt="Preview"
-            className="w-32 h-32 rounded-full object-cover"
-          />
-        ) : profileData?.image ? (
-          <img
-            src={profileData.image}
-            alt="Profile"
-            className="w-32 h-32 rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-32 h-32 flex items-center justify-center text-8xl bg-gray-200 rounded-full">
-            <RxAvatar />
-          </div>
-        )}
+    <div className="h-[90vh] bg-gray-100 p-8">
+      {!formOpen&&<div className="bg-white shadow-lg rounded-lg p-4 max-w-10xl mx-auto">
+        <ProfileSection data={profileData} />
+       <div className="text-center mt-6"> <button onClick={handleLogout} className="cursor-pointer bg-gray-400 p-2 m-1 px-4 py-2  rounded-xl">Logout</button></div>
+        <div className="text-center mt-6">
+        <button
+          onClick={() => setFormOpen(!formOpen)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer"
+        >
+          {formOpen ? "Cancel" : "Update Profile"}
+        </button>
       </div>
+      </div>
+      }
 
-      {/* Display Mode */}
-      {!editMode ? (
-        <>
-          <div className="space-y-2 text-lg mb-4">
-            <p>
-              <strong>Name:</strong> {user?.name || "Not set"}
-            </p>
-            <p>
-              <strong>Email:</strong> {user?.email || "Not set"}
-            </p>
-            <p>
-              <strong>Phone:</strong> {profileData?.phone || "Not set"}
-            </p>
-            <p>
-              <strong>Address:</strong> {profileData?.address || "Not set"}
-            </p>
-          </div>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            onClick={() => setEditMode(true)}
-          >
-            Update Profile
-          </button>
-        </>
-      ) : (
-        /* Edit Form */
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          <div>
-            <label className="block mb-1 font-medium">Name</label>
+      {/* Update Form */}
+      {formOpen && (
+        <div className="max-w-3xl mx-auto mt-6 bg-white shadow-md p-6 rounded-lg">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            
             <input
-              type="text"
-              {...register("name", { required: true })}
-              className="w-full border px-2 py-1 rounded"
+              {...register("name")}
+              placeholder="Full Name"
+              className="w-full border p-2 rounded"
             />
-          </div>
-          <div>
-            <label className="block mb-1 font-medium">Email</label>
+
             <input
-              type="email"
-              {...register("email", { required: true })}
-              className="w-full border px-2 py-1 rounded"
+              type="number"
+              {...register("age")}
+              placeholder="Age"
+              className="w-full border p-2 rounded"
             />
-          </div>
-          <div>
-            <label className="block mb-1 font-medium">Phone</label>
+
             <input
-              type="text"
+              type="date"
+              {...register("dateOfBirth")}
+              className="w-full border p-2 rounded"
+            />
+
+            <input
               {...register("phone")}
-              className="w-full border px-2 py-1 rounded"
+              placeholder="Phone"
+              className="w-full border p-2 rounded"
             />
-          </div>
-          <div>
-            <label className="block mb-1 font-medium">Address</label>
+
             <input
-              type="text"
               {...register("address")}
-              className="w-full border px-2 py-1 rounded"
+              placeholder="Address"
+              className="w-full border p-2 rounded"
             />
-          </div>
-          <div>
-            <label className="block mb-1 font-medium">Profile Image</label>
+
             <input
               type="file"
               {...register("image")}
-              accept="image/*"
+              className="w-full border p-2 rounded"
             />
-          </div>
-          <div className="flex gap-2">
+         <div className="flex flex-row">   <button className="w-full bg-blue-600 text-white py-2 rounded cursor-pointer" onClick={()=>setFormOpen(!formOpen)}>Cancel</button>
             <button
               type="submit"
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              className="w-full bg-green-600 text-white py-2 rounded cursor-pointer"
             >
-              Save
-            </button>
-            <button
-              type="button"
-              className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-              onClick={() => setEditMode(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+              Save Changes
+            </button></div>
+          </form>
+        </div>
       )}
     </div>
   );
