@@ -173,8 +173,8 @@ const PropertyDetails = () => {
               Contact Owner
             </button>
 
-            <button className="w-full border border-blue-600 text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition">
-              Book Visit
+            <button className={`w-full border border-blue-600 text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition ${property.bookingStatus !== "AVAILABLE" ? "cursor-not-allowed opacity-50" : ""}`}>
+             {property.bookingStatus === "AVAILABLE" ? "Book Now" : "Booked"}
             </button>
           </div>
         </div>

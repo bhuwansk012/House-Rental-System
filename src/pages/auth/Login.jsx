@@ -4,11 +4,11 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { loginService } from "../../service/authService";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import {useDispatch} from 'react-redux';
-import {loginSuccess} from '../../features/auth/authSlice'
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../features/auth/authSlice"
 
 const Login = () => {
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -20,59 +20,65 @@ const Login = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const onSubmit = async (data) => {
+    setServerError("");
 
+    try {
+      const response = await loginService(data);
 
+      if (response.status === 200) {
+        toast.success(response.data.message);
 
+        const loggedData = {
+          id: response.data.id,
+          name: response.data.fullName,
+          role: response.data.role,
+          email: response.data.email,
+        };
 
-const onSubmit = async (data) => {
-  setServerError("");
+        dispatch(loginSuccess(loggedData));
 
-  try {
-    const response = await loginService(data);
-    const logedData={id:response.data.id,name:response.data.fullName,role:response.data.role}
-    dispatch(loginSuccess(logedData));
-    
-    if (response.status === 200) {
-      toast.success(response.data.message);
-      console.log(response.data);
-      // Save token
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role);
+        // Save token & role
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("role", response.data.role);
 
-      if(response.data.role === "ADMIN"){
-        navigate("/admin/dashboard");
+        console.log("Login Response:", response.data);
+
+        // Redirect based on role
+        if (response.data.role === "ADMIN") {
+          navigate("/admin/dashboard");
+        } else if (response.data.role === "OWNER") {
+          navigate("/owner/dashboard");
+        } else {
+          navigate("/");
+        }
       }
-      else if(response.data.role === "OWNER"){
-      navigate("/owner/dashboard");
-    }
-    else{
-        navigate("/");
+    } catch (error) {
+      console.log("Login Error:", error);
+
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Cannot connect to server");
+        return;
+      }
+
+      if (!error.response) {
+        toast.error("Network Error");
+        return;
+      }
+
+      const status = error.response.status;
+
+      if (status === 401) {
+        toast.error("Invalid Email or Password");
+      } else if (status === 400) {
+        toast.error("Bad Request");
+      } else if (status === 500) {
+        toast.error("Server Error");
+      } else {
+        toast.error("Something went wrong!");
       }
     }
-
-  } catch (error) {
-    if (!error.response) {
-      toast.error("Network Error!");
-      return;
-    }
-
-    const status = error.response.status;
-
-    if (status === 401) {
-      toast.error("Invalid Email or Password");
-    } else if (status === 400) {
-      toast.error("Bad Request");
-    } else if (status === 500) {
-      toast.error("Server Error");
-    } else {
-      toast.error("Something went wrong!");
-    }
-  }
-};
-
-
-
-
+  };
 
   return (
     <div className="min-h-screen max-w-380 mx-auto flex items-center justify-center bg-white px-4 shadow-lg">
@@ -80,11 +86,8 @@ const onSubmit = async (data) => {
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-md bg-gray-950 text-white p-6 rounded-2xl shadow-xl"
       >
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Login Account
-        </h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Login Account</h2>
 
-        {/* Server Error */}
         {serverError && (
           <div className="bg-red-500 text-white text-sm p-2 rounded mb-4 text-center">
             {serverError}
@@ -105,9 +108,7 @@ const onSubmit = async (data) => {
             })}
           />
           {errors.email && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.email.message}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
 
@@ -148,7 +149,7 @@ const onSubmit = async (data) => {
           <button
             type="button"
             onClick={() => reset()}
-            className="flex-1 bg-gray-300 text-black py-2 rounded-lg font-semibold hover:bg-gray-400 transition cursor-pointer "
+            className="flex-1 bg-gray-300 text-black py-2 rounded-lg font-semibold hover:bg-gray-400 transition cursor-pointer"
           >
             Reset
           </button>
@@ -163,7 +164,10 @@ const onSubmit = async (data) => {
         </div>
 
         <div className="text-right mt-3">
-          <Link to="/forget-password" className="text-blue-400 text-sm hover:underline">
+          <Link
+            to="/forget-password"
+            className="text-blue-400 text-sm hover:underline"
+          >
             Forget password?
           </Link>
         </div>

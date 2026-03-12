@@ -14,7 +14,7 @@ import {
   Cell,
 } from "recharts";
 
-const COLORS = ["#7c3aed", "#ddd6fe"];
+const COLORS = [ "#e20707","#0ad856"]; 
 
 const AdminDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -26,6 +26,7 @@ const AdminDashboard = () => {
         const data = await getAdminData();
 
         setDashboardData(data);
+        console.log("Admin Dashboard Data:", data);
       
       } catch (error) {
         const status = error.response?.status;
@@ -136,7 +137,7 @@ const AdminDashboard = () => {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="total" fill="#7c3aed" radius={[5, 5, 0, 0]} />
+              <Bar dataKey="total" fill="#812be2" radius={[5, 5, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -156,7 +157,7 @@ const AdminDashboard = () => {
                 outerRadius={90}
               >
                 {pieData.map((_, index) => (
-                  <Cell key={index} fill={COLORS[index]} />
+                  <Cell key={index} fill={COLORS[index]} />//use green for available and red for booked
                 ))}
               </Pie>
               <Tooltip />
@@ -165,11 +166,11 @@ const AdminDashboard = () => {
 
           <div className="flex justify-center gap-4 mt-4 text-sm font-medium">
             <span className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-purple-600 rounded-full"></span>
+              <span className="w-3 h-3 bg-red-600 rounded-full"></span>
               Booked
             </span>
             <span className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-purple-200 rounded-full"></span>
+              <span className="w-3 h-3 bg-green-400 rounded-full"></span>
               Available
             </span>
           </div>

@@ -6,49 +6,46 @@ const PropertyCard = ({ item }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
+    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden flex flex-col ">
 
-      {/* Image Section */}
+      {/* Image */}
       <div className="relative">
         <img
           src={item.imageUrl}
           alt={item.title}
-          className="w-full h-52 object-cover group-hover:scale-105 transition duration-300"
+          className="w-full h-56 object-cover"
         />
 
-        {/* Booking Status Badge */}
+        {/* Status */}
         <span
           className={`absolute top-3 right-3 px-3 py-1 text-xs font-semibold rounded-full
-            ${
-              item.bookingStatus === "AVAILABLE"
-                ? "bg-green-500 text-white"
-                : "bg-red-500 text-white"
-            }
-          `}
+          ${
+            item.bookingStatus === "AVAILABLE"
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white"
+          }`}
         >
           {item.bookingStatus}
         </span>
 
-        {/* Type Badge */}
+        {/* Type */}
         <span className="absolute top-3 left-3 bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
           {item.type}
         </span>
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        {/* Title */}
-        <h2 className="text-lg font-semibold text-gray-800 truncate">
+      <div className="p-5 flex flex-col flex-grow">
+
+        <h2 className="text-lg font-semibold text-gray-800">
           {item.title}
         </h2>
 
-        {/* Location */}
-        <p className="text-gray-500 text-sm mt-1">
-          {item.tole}, {item.municipality} 
+        <p className="text-gray-500 text-sm">
+          {item.tole}, {item.municipality}
         </p>
 
-        {/* Description */}
-        <p className="text-gray-600 text-sm mt-2 line-clamp-2">
+        <p className="text-gray-600 text-sm mt-2 line-clamp-2 flex-grow">
           {item.description || "No description available"}
         </p>
 
@@ -59,8 +56,8 @@ const PropertyCard = ({ item }) => {
           <span>{item.area} sqft</span>
         </div>
 
-        {/* Price */}
-        <div className="mt-4 flex justify-between items-center">
+        {/* Price + Button */}
+        <div className="mt-5 flex justify-between items-center">
           <p className="text-orange-500 font-bold text-lg">
             Rs. {item.price}
           </p>
@@ -70,6 +67,7 @@ const PropertyCard = ({ item }) => {
             handleClick={() => navigate(`/property-details/${item.id}`)}
           />
         </div>
+
       </div>
     </div>
   );

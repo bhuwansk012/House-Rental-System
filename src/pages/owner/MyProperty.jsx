@@ -1,34 +1,31 @@
 import React, { useState, useEffect } from "react";
-import {
-  getOwnerProperty,
-  deleteOwnerProperty
-} from "../../service/ownerService";
+import { getOwnerProperty, deleteOwnerProperty } from "../../service/ownerService";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Modal from "../../modal/public/Modal"; 
+import AddProperty from "../../modal/formmodal/AddProperty";
 
 const MyProperty = () => {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); // <-- For modal
 
-  // FETCH PROPERTIES CORRECTLY
+  // Fetch properties
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         const data = await getOwnerProperty();
 
-        // Convert imageUrl string → images array
         const formatted = data.map((p) => ({
           ...p,
           images: p.imageUrl
             ? p.imageUrl.split(",").map(
-                (img) =>
-                  `http://localhost:8080/uploads/properties/${img}`
+                (img) => `http://localhost:8080/uploads/properties/${img}`
               )
             : [],
         }));
 
         setProperties(formatted);
-        console.log(formatted);
       } catch (error) {
         console.error(error);
         toast.error("Failed to load properties");
@@ -42,9 +39,8 @@ const MyProperty = () => {
     navigate(`/owner/edit-property/${id}`);
   };
 
-  // DELETE FROM BACKEND
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this property?")) {
+    if (true) {
       try {
         await deleteOwnerProperty(id);
         setProperties(properties.filter((p) => p.id !== id));
@@ -67,7 +63,7 @@ const MyProperty = () => {
               alt="Page Banner"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-opacity-40 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
               <h1 className="text-orange-500 text-3xl md:text-5xl font-bold text-center">
                 Welcome to Your Property Page
               </h1>
@@ -89,8 +85,9 @@ const MyProperty = () => {
             <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition cursor-pointer">
               Search
             </button>
+            {/* OPEN MODAL BUTTON */}
             <button
-              onClick={() => navigate("/owner/add-property")}
+              onClick={() => setIsModalOpen(true)}
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition cursor-pointer"
             >
               Add New Property
@@ -101,16 +98,13 @@ const MyProperty = () => {
         {/* Property Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {properties.length === 0 ? (
-            <p className="text-gray-600 col-span-full">
-              No properties found.
-            </p>
+            <p className="text-gray-600 col-span-full">No properties found.</p>
           ) : (
             properties.map((prop) => (
               <div
                 key={prop.id}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition"
               >
-                {/* Property Image */}
                 {prop.images && prop.images.length > 0 && (
                   <img
                     src={prop.images[0]}
@@ -136,7 +130,6 @@ const MyProperty = () => {
                     {prop.tole && `• ${prop.tole}`}
                   </p>
 
-                  {/* Badges */}
                   <div className="flex gap-2 mt-2 text-xs flex-wrap">
                     {prop.furnished && (
                       <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">
@@ -148,8 +141,6 @@ const MyProperty = () => {
                         Parking
                       </span>
                     )}
-
-                    {/* FIXED STATUS LOGIC */}
                     <span
                       className={`px-2 py-1 rounded-full ${
                         prop.bookingStatus === "AVAILABLE"
@@ -161,13 +152,12 @@ const MyProperty = () => {
                     </span>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex gap-2 mt-4">
                     <button
                       onClick={() => handleEdit(prop.id)}
                       className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition cursor-pointer"
                     >
-                      Edit
+                      Edit 
                     </button>
 
                     <button
@@ -192,6 +182,11 @@ const MyProperty = () => {
           )}
         </div>
       </div>
+
+      {/* ADD PROPERTY MODAL */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <AddProperty />
+      </Modal>
     </div>
   );
 };

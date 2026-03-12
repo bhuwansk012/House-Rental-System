@@ -9,8 +9,6 @@ import About from "../pages/user/About";
 
 import OwnerDashboard from "../pages/owner/OwnerDashboard";
 import MyProperty from "../pages/owner/MyProperty";
-import AddProperty from "../pages/owner/AddProperty";
-import EditProperty from "../pages/owner/EditProperty";
 import Booking from "../pages/owner/Booking";
 import Notification from "../pages/owner/Notification";
 import Payment from "../pages/owner/Payment";
@@ -50,8 +48,6 @@ function AppRoutes() {
       <Route element={<OwnerLayout />}>
         <Route path="/owner/dashboard" element={<OwnerDashboard />} />
         <Route path="/owner/my-property" element={<MyProperty />} />
-        <Route path="/owner/add-property" element={<AddProperty />} />
-        <Route path="/owner/edit-property/:id" element={<EditProperty />} />
         <Route path="/owner/bookings" element={<Booking />} />
         <Route path="/owner/notifications" element={<Notification />} />
         <Route path="/owner/payments" element={<Payment />} />

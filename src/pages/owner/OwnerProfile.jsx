@@ -1,139 +1,99 @@
 import React, { useEffect, useState } from "react";
-import { useSelector,useDispatch } from "react-redux";
-import { useForm } from "react-hook-form";
-import {useNavigate} from "react-router-dom"
-import { getProfile, updateProfile } from "../../service/profileService";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getProfile } from "../../service/profileService";
 import ProfileSection from "../../components/profile/ProfileSection";
-import {logout} from '../../features/auth/authSlice'
+import { logout} from "../../features/auth/authSlice";
+import { toast } from "react-toastify";
+import  Modal from '../../modal/public/Modal';
+import UpdateProfile from "../../modal/formmodal/UpdateProfile";
 
 const OwnerProfile = () => {
-  const navigate=useNavigate();
-  const user = useSelector((state) => state.auth.user);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const dispatch=useDispatch();
-  const [formOpen, setFormOpen] = useState(false);
-  const [profileData, setProfileData] = useState(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { register, handleSubmit, reset } = useForm();
-    const  handleLogout=()=>{
-      dispatch(logout())
-      navigate("/login")
-    }
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);  
+
+  const role = sessionStorage.getItem("role");
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  // Logout handler
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
+
+  // Fetch profile
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        setLoading(true);
         const data = await getProfile();
 
         const formattedData = {
           ...data,
-          image: data.images
-            ? `http://localhost:8080${data.images}`
-            : null,
+          image: data?.images ? `http://localhost:8080${data.images}` : null,
         };
 
         setProfileData(formattedData);
-        reset(formattedData); // auto fill form
+        console.log("Owner Profile Data:", formattedData);
+  
+
+        console.log("Profile Image in OwnerProfile:", formattedData.image);
       } catch (error) {
         console.error(error);
+        toast.error("Failed to load profile");
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (isAuthenticated) fetchProfile();
-  }, [isAuthenticated, user, reset]);
-
-  const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-
-      formData.append("name", data.name);
-      formData.append("age", data.age);
-      formData.append("phone", data.phone);
-      formData.append("address", data.address);
-      formData.append("dateOfBirth", data.dateOfBirth);
-
-      if (data.image && data.image[0]) {
-        formData.append("image", data.image[0]);
-      }
-
-      await updateProfile(formData);
-      alert("Profile Updated Successfully");
-
-      setFormOpen(false);
-    } catch (err) {
-      console.error(err);
-      alert("Update Failed");
+    if (isAuthenticated && role === "OWNER") {
+      fetchProfile();
     }
-  };
+  }, [isAuthenticated, role, dispatch]);
 
   if (!isAuthenticated) return null;
 
   return (
-    <div className="h-[90vh] bg-gray-100 p-8">
-      {!formOpen&&<div className="bg-white shadow-lg rounded-lg p-4 max-w-10xl mx-auto">
-        <ProfileSection data={profileData} />
-       <div className="text-center mt-6"> <button onClick={handleLogout} className="cursor-pointer bg-gray-400 p-2 m-1 px-4 py-2  rounded-xl">Logout</button></div>
-        <div className="text-center mt-6">
-        <button
-          onClick={() => setFormOpen(!formOpen)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer"
-        >
-          {formOpen ? "Cancel" : "Update Profile"}
-        </button>
-      </div>
-      </div>
-      }
+    <div className="min-h-[90vh] bg-gray-100 p-8">
+      <div className="bg-white shadow-lg rounded-lg p-6 max-w-5xl mx-auto">
+        {/* Loading */}
+        {loading && (
+          <p className="text-center text-gray-500">Loading profile...</p>
+        )}
 
-      {/* Update Form */}
-      {formOpen && (
-        <div className="max-w-3xl mx-auto mt-6 bg-white shadow-md p-6 rounded-lg">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            
-            <input
-              {...register("name")}
-              placeholder="Full Name"
-              className="w-full border p-2 rounded"
-            />
+        {/* Profile Info */}
+        {!loading && profileData && (
+          <ProfileSection data={profileData} />
+        )}
 
-            <input
-              type="number"
-              {...register("age")}
-              placeholder="Age"
-              className="w-full border p-2 rounded"
-            />
+        {/* Logout Button */}
+         <div className="text-center mt-6 gap-4 flex justify-center">
+          
+          <button
+            onClick={()=> setIsOpen(!isOpen)}
+            className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition cursor-pointer"
+          >
+            update
 
-            <input
-              type="date"
-              {...register("dateOfBirth")}
-              className="w-full border p-2 rounded"
-            />
+          </button>
+      
 
-            <input
-              {...register("phone")}
-              placeholder="Phone"
-              className="w-full border p-2 rounded"
-            />
-
-            <input
-              {...register("address")}
-              placeholder="Address"
-              className="w-full border p-2 rounded"
-            />
-
-            <input
-              type="file"
-              {...register("image")}
-              className="w-full border p-2 rounded"
-            />
-         <div className="flex flex-row">   <button className="w-full bg-blue-600 text-white py-2 rounded cursor-pointer" onClick={()=>setFormOpen(!formOpen)}>Cancel</button>
-            <button
-              type="submit"
-              className="w-full bg-green-600 text-white py-2 rounded cursor-pointer"
-            >
-              Save Changes
-            </button></div>
-          </form>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+          >
+            Logout
+          </button>
         </div>
-      )}
+      </div>
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <UpdateProfile />
+      </Modal>
     </div>
   );
 };

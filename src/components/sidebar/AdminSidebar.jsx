@@ -40,10 +40,6 @@ const AdminSidebar = () => {
                     Dashboard
                 </NavLink>
 
-                <NavLink to="/admin/users" className={linkclass}>
-                    <FaUsers className="inline mr-2" />
-                    Users
-                </NavLink>
 
                 <NavLink to="/admin/properties" className={linkclass}>
                     <BsHousesFill className="inline mr-2" />
@@ -58,6 +54,11 @@ const AdminSidebar = () => {
                 <NavLink to="/admin/owners" className={linkclass}>
                     <GrUserAdmin className="inline mr-2" />
                     Owners
+                </NavLink>
+                
+                <NavLink to="/admin/users" className={linkclass}>
+                    <FaUsers className="inline mr-2" />
+                    Users
                 </NavLink>
                 <NavLink to="/admin/profile" className={linkclass}>
                     <FaUser className="inline mr-2" />

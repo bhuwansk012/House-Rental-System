@@ -1,19 +1,26 @@
-import React from 'react'
-import PropertyCard from '../Card/PropertyCard'
-import Button from '../Button/Button'
-import { useNavigate } from 'react-router-dom'
-const Propertydash = ({ data = [] }) => {
+import React from "react";
+import PropertyCard from "../Card/PropertyCard";
+import Button from "../Button/Button";
+import { useNavigate } from "react-router-dom";
 
- const navigate=useNavigate();
+const Propertydash = ({ data = [] }) => {
+  const navigate = useNavigate();
 
   return (
-    <section className="py-10 px-6 max-w-7xl mx-auto">
+    <section className="py-14">
 
-
+      {/* Heading */}
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-bold text-gray-800">
+          Available <span className="text-blue-600">Properties</span>
+        </h2>
+        <p className="text-gray-500 mt-2">
+          Find the perfect place to live
+        </p>
+      </div>
 
       {/* Property Grid */}
-
-      <div className="max-w-7xl mx-auto px-6 grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {data.length > 0 ? (
           data.slice(0, 6).map((item) => (
             <PropertyCard key={item.id} item={item} />
@@ -24,16 +31,17 @@ const Propertydash = ({ data = [] }) => {
           </p>
         )}
       </div>
-       {/* View All Button */}
-      <div className="mt-10 flex justify-center">
+
+      {/* View All Button */}
+      <div className="mt-12 flex justify-center">
         <Button
           text="View All Properties"
-          handleClick={() => navigate('/properties')}
+          handleClick={() => navigate("/properties")}
         />
       </div>
 
     </section>
-  )
-}
+  );
+};
 
-export default Propertydash
+export default Propertydash;
