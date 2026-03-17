@@ -35,12 +35,6 @@ const OwnerDashboard = () => {
 
       {/* Buttons */}
       <div className="flex gap-4 mb-6">
-        <button
-          onClick={() => setOpenModal(true)}
-          className="bg-blue-600 text-white px-6 py-3 rounded-xl"
-        >
-          Add Property
-        </button>
 
         <button
           onClick={() => navigate("/owner/my-property")}

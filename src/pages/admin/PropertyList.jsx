@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 const PropertyList = () => {
   const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchProperties();
@@ -31,6 +32,7 @@ const PropertyList = () => {
 
   const handleStatusChange = async (propertyId, newStatus) => {
     try {
+      setLoading(true);
       const response = await updatePropertyStatus(propertyId, newStatus);
 
       if (response.status === 200) {
@@ -139,14 +141,6 @@ const PropertyList = () => {
                 {/* ACTIONS */}
                 <td className="px-2 py-2 text-xs">
                   <div className="flex gap-2 justify-center items-center bg-gray-300 p-1 m-1 rounded-xl">
-
-                    <button className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition">
-                      <FiEdit size={16} />
-                    </button>
-
-                    <button className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition">
-                      <FiTrash2 size={16} />
-                    </button>
                      <div className="relative inline-block group">
                     <button
                       className={`px-3 py-1 rounded-full text-xs font-semibold text-white cursor-pointer
@@ -154,20 +148,22 @@ const PropertyList = () => {
                       ${property.status === "PENDING" ? "bg-yellow-500" : ""}
                       ${property.status === "REJECTED" ? "bg-red-500" : ""}
                      `}
+                      onClick={()=>setLoading(false)}
                     >
-                      {property.status}
+                      {loading ? "Aproving..." : property.status}
+                     
                     </button>
 
-                    {property.status === "PENDING" && (
+                    {property.status === "PENDING" && !loading &&(
                       <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-yellow-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          className="px-2 py-1 bg-green-600 rounded-l text-white text-xs font-semibold"
+                          className={`px-2 py-1 bg-green-600 rounded-l text-white text-xs font-semibold cursor-pointer`}
                           onClick={() => handleStatusChange(property.id, "APPROVED")}
                         >
                           Approve
                         </button>
                         <button
-                          className="px-2 py-1 bg-red-600 rounded-r text-white text-xs font-semibold"
+                          className="px-2 py-1 bg-red-600 rounded-r text-white text-xs font-semibold cursor-pointer"
                           onClick={() => handleStatusChange(property.id, "REJECTED")}
                         >
                           Reject

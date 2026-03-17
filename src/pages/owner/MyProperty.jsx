@@ -77,14 +77,7 @@ const MyProperty = () => {
           <h2 className="text-2xl font-semibold">My Properties</h2>
 
           <div className="flex flex-col sm:flex-row gap-2">
-            <input
-              type="text"
-              placeholder="Search property..."
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition cursor-pointer">
-              Search
-            </button>
+           
             {/* OPEN MODAL BUTTON */}
             <button
               onClick={() => setIsModalOpen(true)}

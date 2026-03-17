@@ -43,7 +43,7 @@ const AddProperty = () => {
       toast.success("Property Added Successfully");
       reset();
       setSelectedFiles([]);
-      setTimeout(() => navigate("/owner/my-property"), 1500);
+      setTimeout(() => navigate("/owner/dashboard"), 1500);
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
