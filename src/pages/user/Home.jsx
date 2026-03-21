@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Hero from "../../components/Hero/Hero";
 import OurProperty from "../../components/Categoryproperty/OurProperty";
 import Aboutsection from "../../components/section/Aboutsection";
-import { getProperty } from "../../service/publicService";
+import { getAllProperties } from "../../service/publicService";
 import Propertydash from "../../components/AfterLogged/Propertydash";
 import Hero1 from "../../components/AfterLogged/Hero1";
 
@@ -12,7 +12,7 @@ const Home = () => {
 
   const fetchProperty = async () => {
     try {
-      const response = await getProperty();
+      const response = await getAllProperties();
 
       const updated = response.data.map((item) => ({
         ...item,

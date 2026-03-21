@@ -14,7 +14,7 @@ const OurProperty = ({ data = [] }) => {
       {/* Property Grid */}
       <div className="max-w-7xl mx-auto px-6 grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {data.length > 0 ? (
-          data.slice(0, 6).map((item) => (
+          data.slice(0, 3).map((item) => (
             <PropertyCard key={item.id} item={item} />
           ))
         ) : (

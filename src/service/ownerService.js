@@ -30,3 +30,8 @@ export const deleteOwnerProperty = async (id) => {
   const response = await api.delete(`/owner/delete/${id}`);
   return response.data;
 };
+
+export const getDashboardStats = async () => {
+  const response = await api.get("/owner/dashboard");
+  return response.data;
+}

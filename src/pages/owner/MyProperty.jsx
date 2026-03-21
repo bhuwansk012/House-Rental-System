@@ -8,18 +8,19 @@ import AddProperty from "../../modal/formmodal/AddProperty";
 const MyProperty = () => {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // <-- For modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch properties
+  // ---------------- FETCH PROPERTIES ----------------
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         const data = await getOwnerProperty();
 
-        const formatted = data.map((p) => ({
+        // Format images and reverse for latest property first
+        const formatted = [...data].reverse().map((p) => ({
           ...p,
           images: p.imageUrl
-            ? p.imageUrl.split(",").map(
+            ? [...p.imageUrl.split(",")].reverse().map(
                 (img) => `http://localhost:8080/uploads/properties/${img}`
               )
             : [],
@@ -35,60 +36,66 @@ const MyProperty = () => {
     fetchProperties();
   }, []);
 
+  // ---------------- EDIT ----------------
   const handleEdit = (id) => {
     navigate(`/owner/edit-property/${id}`);
   };
 
+  // ---------------- DELETE ----------------
   const handleDelete = async (id) => {
-    if (true) {
-      try {
-        await deleteOwnerProperty(id);
-        setProperties(properties.filter((p) => p.id !== id));
-        toast.success("Property deleted successfully");
-      } catch (error) {
-        toast.error("Failed to delete property");
+    try {
+      const prop = properties.find((p) => p.id === id);
+
+      if (!prop) return;
+
+      // Prevent deleting booked property
+      if (prop.bookingStatus === "BOOKED") {
+        toast.error("Cannot delete a booked property");
+        return;
       }
+
+      await deleteOwnerProperty(id);
+      setProperties(properties.filter((p) => p.id !== id));
+      toast.success("Property deleted successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete property");
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Page Banner */}
-      {properties.length > 0 &&
-        properties[0].images &&
-        properties[0].images.length > 0 && (
-          <div className="w-full h-64 md:h-96 relative">
-            <img
-              src={properties[0].images[0]}
-              alt="Page Banner"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <h1 className="text-orange-500 text-3xl md:text-5xl font-bold text-center">
-                Welcome to Your Property Page
-              </h1>
-            </div>
+      {/* PAGE BANNER */}
+      {properties.length > 0 && properties[0].images.length > 0 && (
+        <div className="w-full h-64 md:h-96 relative">
+          <img
+            src={properties[0].images[0]}
+            alt="Page Banner"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <h1 className="text-orange-500 text-3xl md:text-5xl font-bold text-center">
+              Welcome to Your Property Page
+            </h1>
           </div>
-        )}
+        </div>
+      )}
 
       <div className="p-6">
-        {/* Header */}
+        {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
           <h2 className="text-2xl font-semibold">My Properties</h2>
 
-          <div className="flex flex-col sm:flex-row gap-2">
-           
-            {/* OPEN MODAL BUTTON */}
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition cursor-pointer"
-            >
-              Add New Property
-            </button>
-          </div>
+          {/* ADD PROPERTY */}
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition cursor-pointer"
+          >
+            Add New Property
+          </button>
         </div>
 
-        {/* Property Grid */}
+        {/* PROPERTY GRID */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {properties.length === 0 ? (
             <p className="text-gray-600 col-span-full">No properties found.</p>
@@ -98,7 +105,8 @@ const MyProperty = () => {
                 key={prop.id}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition"
               >
-                {prop.images && prop.images.length > 0 && (
+                {/* IMAGE */}
+                {prop.images.length > 0 && (
                   <img
                     src={prop.images[0]}
                     alt={prop.title}
@@ -107,22 +115,26 @@ const MyProperty = () => {
                 )}
 
                 <div className="p-4">
+                  {/* TITLE */}
                   <h3 className="text-lg font-semibold">{prop.title}</h3>
                   <p className="text-sm text-gray-500">
                     {prop.type} • Rs. {prop.price}
                   </p>
 
+                  {/* FEATURES */}
                   <div className="flex gap-2 mt-2 text-xs text-gray-600">
                     <span>{prop.bedrooms} Beds</span>
                     <span>{prop.bathrooms} Baths</span>
                     <span>{prop.area} sqft</span>
                   </div>
 
+                  {/* ADDRESS */}
                   <p className="text-sm text-gray-500 mt-1">
                     {prop.district}, {prop.municipality}{" "}
                     {prop.tole && `• ${prop.tole}`}
                   </p>
 
+                  {/* BADGES */}
                   <div className="flex gap-2 mt-2 text-xs flex-wrap">
                     {prop.furnished && (
                       <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">
@@ -145,17 +157,23 @@ const MyProperty = () => {
                     </span>
                   </div>
 
-                  <div className="flex gap-2 mt-4">
+                  {/* ACTION BUTTONS */}
+                  <div className="flex gap-2 mt-4 flex-wrap">
                     <button
                       onClick={() => handleEdit(prop.id)}
                       className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition cursor-pointer"
                     >
-                      Edit 
+                      Edit
                     </button>
 
                     <button
                       onClick={() => handleDelete(prop.id)}
-                      className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition cursor-pointer"
+                      className={`text-white px-3 py-1 rounded text-sm transition cursor-pointer ${
+                        prop.bookingStatus === "BOOKED"
+                          ? "bg-gray-400 cursor-not-allowed disabled"
+                          : "bg-red-600 hover:bg-red-700"
+                      }`}
+                      disabled={prop.bookingStatus === "BOOKED"}
                     >
                       Delete
                     </button>

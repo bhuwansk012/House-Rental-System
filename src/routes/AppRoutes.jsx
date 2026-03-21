@@ -21,7 +21,7 @@ import OwnerLayout from "../layouts/OwnerLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import UserList from "../pages/admin/UserList";
 import PropertyList from "../pages/admin/PropertyList";
-import BookingList from "../pages/admin/bookingList";
+import BookingList from "../pages/admin/BookingList";
 import OwnerList from "../pages/admin/OwnerList";
 import PropertyDetails from "../pages/user/PropertyDetails";
 import AdminProfile from '../pages/admin/AdminProfile'

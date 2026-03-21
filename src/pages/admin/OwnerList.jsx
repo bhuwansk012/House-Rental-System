@@ -8,11 +8,12 @@ const OwnerList = () => {
   const [search, setSearch] = useState("");
   const [filteredOwners, setFilteredOwners] = useState([]);
 
-  // ✅ Fetch Owners
+  // 
   const fetchOwners = async () => {
     try {
       const response = await getAdminOwners();
       setOwners(response);
+      console.log("Fetched Owners:", response);
       setFilteredOwners(response);
     } catch (error) {
       console.error("Error fetching owners:", error);
@@ -24,9 +25,9 @@ const OwnerList = () => {
     fetchOwners();
   }, []);
 
-  // ✅ Delete Owner
+  // Delete Owner
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this owner?")) return;
+  
 
     try {
       await deleteOwnerByAdmin(id);
@@ -37,7 +38,7 @@ const OwnerList = () => {
     }
   };
 
-  // ✅ Search Button Logic
+  //  Search Button Logic
   const handleSearch = () => {
     const filtered = owners.filter(
       (owner) =>
@@ -52,7 +53,7 @@ const OwnerList = () => {
   return (
     <div className="p-6 bg-white min-h-screen">
 
-      {/* 🔥 FLEX HEADER */}
+      {/*  FLEX HEADER */}
       <div className="flex justify-between items-center mb-6">
 
         {/* LEFT SIDE */}
@@ -90,8 +91,6 @@ const OwnerList = () => {
               <th className="py-3 px-6 text-left">ID</th>
               <th className="py-3 px-6 text-left">Owner Name</th>
               <th className="py-3 px-6 text-left">Email</th>
-              <th className="py-3 px-6 text-left">Address</th>
-              <th className="py-3 px-6 text-left">Phone</th>
               <th className="py-3 px-6 text-left">Actions</th>
             </tr>
           </thead>
@@ -106,8 +105,6 @@ const OwnerList = () => {
                   <td className="py-2 px-4">{owner.id}</td>
                   <td className="py-2 px-4">{owner.fullName}</td>
                   <td className="py-2 px-4">{owner.email}</td>
-                  <td className="py-2 px-4">{owner.address}</td>
-                  <td className="py-2 px-4">{owner.phone}</td>
                   <td className="py-2 px-6">
                     <button
                       className="text-red-600 hover:text-red-800 cursor-pointer"
