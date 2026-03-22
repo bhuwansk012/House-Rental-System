@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FaCheckCircle } from "react-icons/fa";
-import {useNavigate} from 'react-router-dom'
+import { FaCheckCircle, FaRocket, FaEye, FaBullseye } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -12,88 +12,120 @@ const fadeUp = {
   },
 };
 
-const fade = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { duration: 0.6, ease: "easeOut" },
-  },
-};
-
 const About = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   return (
-    <main className=" overflow-hidden w-380  mx-auto shadow-lg ">
-
-      {/* Hero */}
-
-
-      {/* Who We Are */}
-      <section className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <h2 className="text-3xl font-bold mb-5 text-gray-800">
-            Who We Are
-          </h2>
-          <p className="text-gray-600 leading-relaxed mb-4">
-            RentHouse is a modern rental platform designed to simplify the way
-            people discover, evaluate, and rent residential properties.
-          </p>
-          <p className="text-gray-600 leading-relaxed">
-            We provide a secure and transparent environment where property owners
-            and tenants connect with confidence.
-          </p>
-        </motion.div>
-
-        <motion.img
-          src="https://images.unsplash.com/photo-1568605114967-8130f3a36994"
-          alt="Rental Property"
-          className="rounded-2xl shadow-lg w-full object-cover"
-          variants={fade}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        />
-      </section>
-
-      {/* Mission */}
-      <section className="">
-        <motion.div
-          className="max-w-7xl mx-auto px-6 py-20 text-center"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">
-            Our Mission
-          </h2>
-          <p className="max-w-3xl mx-auto text-gray-600 leading-relaxed">
-            Our mission is to make the rental process efficient, reliable, and
-            accessible by leveraging modern technology and verified property
-            data.
-          </p>
-        </motion.div>
-      </section>
-
-      {/* What We Do */}
-      <section className="">
-        <div className="max-w-7xl mx-auto px-6 py-20">
-          <motion.h2
-            className="text-3xl font-bold text-center mb-12 text-gray-800"
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
+    <main className="bg-white overflow-hidden">
+      
+      {/* --- MINI HERO / BREADCRUMB --- */}
+      <section className="bg-slate-50 py-16 border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <motion.span 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="text-orange-500 font-black uppercase tracking-[0.3em] text-xs"
           >
-            What We Do
+            Our Story
+          </motion.span>
+          <motion.h1 
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="text-5xl font-black text-slate-800 tracking-tighter mt-4"
+          >
+            Redefining the <span className="text-orange-500">Rental Experience.</span>
+          </motion.h1 >
+        </div>
+      </section>
+
+      {/* --- WHO WE ARE (Visual Split) --- */}
+      <section className="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="relative"
+        >
+          <div className="absolute -top-10 -left-10 w-32 h-32 bg-orange-50 rounded-full -z-10" />
+          <h2 className="text-4xl font-black mb-8 text-slate-800 tracking-tight leading-tight">
+            Connecting Owners & Tenants <br/>with <span className="text-orange-500 underline decoration-4 underline-offset-8">Absolute Trust</span>
+          </h2>
+          <p className="text-slate-600 text-lg leading-relaxed mb-6">
+            RentHouse is more than just a listing site. We are a modern rental platform engineered to eliminate the stress of finding a home.
+          </p>
+          <p className="text-slate-600 text-lg leading-relaxed">
+            By digitizing the evaluation process and verifying every property, we ensure that what you see is exactly what you get. No surprises, just keys.
+          </p>
+        </motion.div>
+
+        <motion.div 
+          className="relative group"
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+            alt="Modern Architecture"
+            className="rounded-[3rem] shadow-2xl w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+          />
+          <div className="absolute -bottom-6 -right-6 bg-white p-8 rounded-[2rem] shadow-xl hidden md:block border border-slate-50">
+            <p className="text-4xl font-black text-orange-500">10k+</p>
+            <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">Happy Tenants</p>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* --- CORE PILLARS (Mission/Vision/Values) --- */}
+      <section className="bg-slate-900 py-24 text-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* Mission */}
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="space-y-4">
+              <div className="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
+                <FaBullseye size={24} />
+              </div>
+              <h3 className="text-2xl font-bold">Our Mission</h3>
+              <p className="text-slate-400 leading-relaxed">
+                To make the rental process efficient, reliable, and accessible by leveraging modern technology and verified property data.
+              </p>
+            </motion.div>
+
+            {/* Vision */}
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={{ delay: 0.1 }} className="space-y-4">
+              <div className="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                <FaEye size={24} />
+              </div>
+              <h3 className="text-2xl font-bold">Our Vision</h3>
+              <p className="text-slate-400 leading-relaxed">
+                We envision a rental ecosystem where finding and managing a home is simple, data-driven, and completely stress-free.
+              </p>
+            </motion.div>
+
+            {/* Strategy */}
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={{ delay: 0.2 }} className="space-y-4">
+              <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                <FaRocket size={24} />
+              </div>
+              <h3 className="text-2xl font-bold">What We Do</h3>
+              <p className="text-slate-400 leading-relaxed">
+                We bridge the gap between property owners and seekers through a secure platform built on transparency and communication.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- FEATURES CHECKLIST --- */}
+      <section className="py-24 bg-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <motion.h2 
+            variants={fadeUp} initial="hidden" whileInView="visible"
+            className="text-3xl font-black text-center mb-16 text-slate-800 tracking-tight"
+          >
+            The RentHouse Advantage
           </motion.h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
               "Discover verified rental properties with accurate details",
               "Compare properties by location, pricing, and amenities",
@@ -102,56 +134,42 @@ const About = () => {
             ].map((item, index) => (
               <motion.div
                 key={index}
-                className="flex items-start gap-4"
+                className="flex items-center gap-5 p-6 rounded-3xl bg-slate-50 hover:bg-orange-50 transition-colors group"
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <FaCheckCircle className="text-orange-500 text-xl mt-1" />
-                <p className="text-gray-600 leading-relaxed">{item}</p>
+                <div className="p-2 bg-white rounded-xl shadow-sm group-hover:bg-orange-500 group-hover:text-white transition-all">
+                  <FaCheckCircle className="text-orange-500 group-hover:text-white" />
+                </div>
+                <p className="text-slate-700 font-bold text-sm tracking-tight">{item}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Vision */}
-      <section className="">
+      {/* --- CTA SECTION --- */}
+      <section className="px-6 pb-24">
         <motion.div
-          className="max-w-7xl mx-auto px-6 py-20 text-center"
+          className="max-w-5xl mx-auto px-10 py-16 text-center bg-gradient-to-br from-orange-500 to-orange-600 rounded-[3rem] shadow-2xl shadow-orange-200"
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">
-            Our Vision
+          <h2 className="text-4xl font-black mb-4 text-white tracking-tighter">
+            Start Your Journey with Confidence
           </h2>
-          <p className="max-w-3xl mx-auto text-gray-600 leading-relaxed">
-            We envision a rental ecosystem where finding and managing a home is
-            simple, data-driven, and stress-free.
+          <p className="mb-10 text-orange-50 font-medium text-lg max-w-2xl mx-auto">
+            Whether you're looking for a cozy studio or a luxury villa, your perfect match is just a click away.
           </p>
-        </motion.div>
-      </section>
-
-      {/* CTA */}
-      <section className=" text-gray-400">
-        <motion.div
-          className="max-w-7xl mx-auto px-6 py-16 text-center"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <h2 className="text-3xl font-bold mb-4 text-gray-700">
-            Start Your Rental Journey with Confidence
-          </h2>
-          <p className="mb-6 text-gray-700">
-            Explore verified properties or list your rental with ease.
-          </p>
-          <button onClick={() => navigate('/properties')} className="bg-gray-100 text-orange-500 px-8 py-3 rounded-full font-semibold hover:bg-gray-200 transition">
+          <button 
+            onClick={() => navigate('/properties')} 
+            className="bg-white text-orange-600 px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-slate-900 hover:text-white transition-all shadow-xl active:scale-95"
+          >
             Explore Properties
           </button>
         </motion.div>

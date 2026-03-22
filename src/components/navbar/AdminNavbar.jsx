@@ -1,62 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { RxAvatar } from "react-icons/rx";
+import React from "react";
+import { RxAvatar, RxChevronRight } from "react-icons/rx";
 import { Link } from "react-router-dom";
-import { getProfile } from "../../service/profileService";
-import { toast } from "react-toastify";
 
 const AdminNavbar = () => {
-  const role = sessionStorage.getItem("role");
-  const isAuthenticated = sessionStorage.getItem("isAuthenticated");
-
-  const [profile, setProfile] = useState(null);
-
-  // Fetch admin profile
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const data = await getProfile();
-
-        const formattedData = {
-          ...data,
-          imageUrl: data?.images ? `http://localhost:8080${data.images}` : null, 
-        };
-
-        setProfile(formattedData);
-        console.log("Admin Profile Data in navbar:", formattedData);
-      } catch (error) {
-        console.error("Profile fetch error:", error);
-        toast.error("Failed to load profile");
-      }
-    };
-
-    if (isAuthenticated && role === "ADMIN") {
-      fetchProfile();
-    }
-  }, [isAuthenticated, role]);
+  const name = sessionStorage.getItem("name") || "Admin";
+  const role = sessionStorage.getItem("role") || "Super Admin";
 
   return (
-    <header className="h-16 border-b border-gray-200 flex items-center justify-between px-6 mx-auto shadow-sm">
-      <div className="ml-4">
-        <h1 className="text-xl font-bold text-blue-900">
-          Welcome to Administrator Dashboard
+    <header className="sticky top-0 z-40 w-full h-20 bg-white/70 backdrop-blur-xl border-b border-slate-200/60  flex items-center justify-between transition-all">
+      
+      {/* Left Side: Branding */}
+      <div className="flex flex-col">
+        <h1 className="text-xl font-extrabold tracking-tight text-slate-900">
+          Admin <span className="text-blue-600">Central</span>
         </h1>
+        <div className="flex items-center gap-2">
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">
+            System Operational
+          </p>
+        </div>
       </div>
 
-      <div>
+      {/* Right Side: Profile Link */}
+      <div className="flex items-center gap-4">
+        <div className="hidden md:block text-right mr-2">
+          <p className="text-sm font-bold text-slate-800 leading-none mb-1">{name}</p>
+          <p className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider">{role}</p>
+        </div>
+
         <Link
           to="/admin/profile"
-          className="flex items-center px-4 py-2 rounded-full border border-blue-900 text-blue-900 font-semibold hover:bg-blue-900 hover:text-white transition-all duration-300 shadow-sm"
+          className="group flex items-center gap-3 pl-2 pr-4 py-1.5 bg-slate-900 text-white rounded-2xl hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 transition-all duration-300 active:scale-95"
         >
-          {profile?.imageUrl ? (
-            <img
-              src={profile.imageUrl}
-              alt="Profile"
-              className="w-6 h-6 rounded-full object-cover"
-            />
-          ) : (
-            <RxAvatar size={22} />
-          )}
-          <span className="ml-2">{profile?.fullName || "Admin"}</span>
+          <div className="bg-white/10 p-1 rounded-xl group-hover:bg-white/20 transition-colors">
+            <RxAvatar size={28} className="text-white" />
+          </div>
+          
+          <span className="text-sm font-bold tracking-wide">View Profile</span>
+          
+          <RxChevronRight 
+            size={18} 
+            className="text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all" 
+          />
         </Link>
       </div>
     </header>

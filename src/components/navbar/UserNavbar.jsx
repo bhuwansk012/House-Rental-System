@@ -1,43 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
-import { getProfile } from "../../service/profileService";
-import { toast } from "react-toastify";
+
 
 const UserNavbar = () => {
 
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(false);
-
   const isAuthenticated = sessionStorage.getItem("isAuthenticated");
-  const name=sessionStorage.getItem("isAuthenticated");
+  const name=sessionStorage.getItem("name");
   const role = sessionStorage.getItem("role");
 
-  const fetchProfile = async () => {
-    try {
-      setLoading(true);
 
-      const data = await getProfile();
-
-      const formattedData = {
-        ...data,
-        image: data?.images ? `http://localhost:8080${data.images}` : null,
-      };
-
-      setProfile(formattedData);
-
-    } catch (error) {
-      toast.error("Failed to load profile");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchProfile();
-    }
-  }, [isAuthenticated]);
 
   const navLinkClass = ({ isActive }) =>
     `relative pb-1 transition-all duration-300 text-gray-700 hover:text-orange-500 
@@ -50,7 +22,7 @@ const UserNavbar = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
-      <nav className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
+      <nav className="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
 
         {/* Logo */}
         <Link
@@ -79,15 +51,9 @@ const UserNavbar = () => {
               hover:bg-blue-900 hover:text-white
               transition-all duration-300"
             >
-              {profile?.image ? (
-                <img
-                  src={profile.image}
-                  alt="profile"
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-              ) : (
+              
                 <RxAvatar size={22} />
-              )}
+      
 
               <span>{name || "User"}</span>
             </Link>

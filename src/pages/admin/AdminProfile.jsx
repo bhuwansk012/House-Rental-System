@@ -1,145 +1,80 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile } from "../../service/profileService";
 import { toast } from "react-toastify";
 import { RxAvatar } from "react-icons/rx";
-import Modal from "../../modal/public/Modal";
-import UpdateProfile from "../../modal/formmodal/UpdateProfile";
+import { HiOutlineMail, HiOutlineBadgeCheck, HiOutlineUser } from "react-icons/hi";
 
 const AdminProfile = () => {
   const navigate = useNavigate();
-  const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const role = sessionStorage.getItem("role");
+  const name = sessionStorage.getItem("name");
+  const email = sessionStorage.getItem("email");
   const isAuthenticated = sessionStorage.getItem("isAuthenticated");
-  const name=sessionStorage.getItem("name");
+  const role = sessionStorage.getItem("role");
 
+  const handleLogout = () => {
+    sessionStorage.clear(); // Clear all session data
+    toast.success("Logged out successfully!");
+    navigate("/");
+  };
 
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setLoading(true);
-
-        const data = await getProfile();
-
-        const formattedData = {
-          ...data,
-          image: data?.images
-            ? `http://localhost:8080${data.images}`
-            : null,
-        };
-
-        setProfileData(formattedData);
-        console.log("Admin Profile Data:", formattedData);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to load profile");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isAuthenticated && role === "ADMIN") {
-      fetchProfile();
-    }
-  }, [isAuthenticated, role]);
-
-  if (!isAuthenticated) return null;
+  if (!isAuthenticated) {
+    return (
+      <div className="flex h-screen items-center justify-center text-gray-500 font-medium">
+        Please log in to access this page.
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-[90vh] bg-gray-100 p-8 flex justify-center">
-      <div className="bg-white shadow-xl rounded-xl overflow-hidden w-full max-w-4xl">
-
-        {/* Cover */}
-        {profileData?.image ? (
-          <div
-            className="h-40 bg-cover bg-center"
-            style={{ backgroundImage: `url(${profileData.image})` }}
-          ></div>
-        ) : (
-          <div className="h-40 bg-linear-to-r from-blue-500 to-purple-600"></div>
-        )}
-
-        {/* Profile */}
-        {!loading && profileData && (
-          <div className="flex flex-col items-center px-6 pb-6">
-
-            {/* Avatar */}
-            <div className="-mt-16">
-              {profileData.image ? (
-                <img
-                  src={profileData.image}
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-md"
-                />
-              ) : (
-                <RxAvatar className="w-32 h-32 text-gray-400 bg-white rounded-full border-4 border-white shadow-md" />
-              )}
+    <div className="min-h-screen w-full bg-gradient-to-tr from-slate-100 via-blue-50 to-slate-100 flex justify-center items-center p-6">
+      <div className="bg-white/80 backdrop-blur-md border border-white shadow-[0_20px_50px_rgba(8,_112,_184,_0.07)] rounded-[2.5rem] p-8 md:p-12 w-full max-w-2xl transition-all hover:shadow-2xl">
+        
+        {/* Header Section */}
+        <div className="flex flex-col items-center mb-10">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-400 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+            <div className="relative bg-white rounded-full p-2">
+              <RxAvatar size={120} className="text-blue-500" />
             </div>
-
-            {/* Name */}
-            <h2 className="text-2xl font-bold mt-4">
-              {profileData.fullName}
-            </h2>
-
-            <p className="text-gray-500">{profileData.email}</p>
-
-            {/* Info Cards */}
-            <div className="grid grid-cols-2 gap-6 mt-8 w-full">
-
-              <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-                <p className="text-gray-500 text-sm">Phone</p>
-                <p className="font-semibold">
-                  {profileData.phone || "N/A"}
-                </p>
-              </div>
-
-              <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-                <p className="text-gray-500 text-sm">Address</p>
-                <p className="font-semibold">
-                  {profileData.address || "N/A"}
-                </p>
-              </div>
-
-              <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-                <p className="text-gray-500 text-sm">Role</p>
-                <p className="font-semibold">{role}</p>
-              </div>
-
-              <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-                <p className="text-gray-500 text-sm">Status</p>
-                <p className="font-semibold text-green-500">
-                  Active
-                </p>
-              </div>
-
-            </div>
-
-            {/* Logout */}
-            <button
-              onClick={()=>setIsOpen(!isOpen)}
-              className="mt-8 bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition"
-            >
-              Update Profile
-            </button>
-
           </div>
-        )}
+          <h2 className="mt-6 text-3xl font-bold text-gray-800 tracking-tight">{name}</h2>
+          <span className="mt-2 px-4 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full uppercase tracking-wider">
+            {role}
+          </span>
+        </div>
 
-        {loading && (
-          <p className="text-center py-10 text-gray-500">
-            Loading profile...
-          </p>
-        )}
+        {/* Info Grid */}
+        <div className="space-y-4">
+          <InfoCard icon={<HiOutlineUser />} label="Full Name" value={name} />
+          <InfoCard icon={<HiOutlineMail />} label="Email Address" value={email} />
+          <InfoCard icon={<HiOutlineBadgeCheck />} label="Account Type" value={role} />
+        </div>
 
+        {/* Action Button */}
+        <div className="mt-12 flex justify-center">
+          <button
+            onClick={handleLogout}
+            className="group relative w-full md:w-auto px-10 py-4 bg-gray-900 text-white font-bold rounded-2xl overflow-hidden transition-all hover:bg-red-600 active:scale-95"
+          >
+            <span className="relative z-10">Logout Account</span>
+          </button>
+        </div>
       </div>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <UpdateProfile />
-      </Modal>
     </div>
   );
 };
+
+// Reusable Sub-component for clean code
+const InfoCard = ({ icon, label, value }) => (
+  <div className="flex items-center p-4 bg-gray-50/50 rounded-2xl border border-gray-100 hover:border-blue-200 transition-colors">
+    <div className="p-3 bg-white shadow-sm rounded-xl text-blue-500 mr-4">
+      {React.cloneElement(icon, { size: 24 })}
+    </div>
+    <div>
+      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{label}</p>
+      <p className="text-gray-700 font-medium">{value || "Not Provided"}</p>
+    </div>
+  </div>
+);
 
 export default AdminProfile;
