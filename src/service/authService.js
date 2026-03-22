@@ -15,3 +15,11 @@ export const loginService = async (loginData) => {
   return response;
 };
 
+export const logout=()=>{
+    sessionStorage.removeItem("role");
+    sessionStorage.removeItem("isAuthenticated");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("name");
+    sessionStorage.clear();
+
+}

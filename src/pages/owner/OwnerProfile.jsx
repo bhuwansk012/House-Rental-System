@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../service/profileService";
 import ProfileSection from "../../components/profile/ProfileSection";
-import { logout} from "../../features/auth/authSlice";
 import { toast } from "react-toastify";
 import  Modal from '../../modal/public/Modal';
 import UpdateProfile from "../../modal/formmodal/UpdateProfile";
@@ -17,7 +16,7 @@ const OwnerProfile = () => {
   const [isOpen, setIsOpen] = useState(false);  
 
   const role = sessionStorage.getItem("role");
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
 
   // Logout handler
   const handleLogout = () => {

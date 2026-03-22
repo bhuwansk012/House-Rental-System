@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
-import { useSelector } from "react-redux";
 import { getProfile } from "../../service/profileService";
 import { toast } from "react-toastify";
 
@@ -10,8 +9,8 @@ const UserNavbar = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const user = useSelector((state) => state.auth.user);
+  const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+  const name=sessionStorage.getItem("isAuthenticated");
   const role = sessionStorage.getItem("role");
 
   const fetchProfile = async () => {
@@ -90,7 +89,7 @@ const UserNavbar = () => {
                 <RxAvatar size={22} />
               )}
 
-              <span>{user?.name || "User"}</span>
+              <span>{name || "User"}</span>
             </Link>
           </div>
         ) : (

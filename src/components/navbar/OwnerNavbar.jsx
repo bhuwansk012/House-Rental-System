@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RxAvatar } from "react-icons/rx";
 import { HiMenu } from "react-icons/hi";
-import { useSelector } from "react-redux";
 import { getProfile } from "../../service/profileService";
 import { toast } from "react-toastify";
 
@@ -9,8 +8,8 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
   const [profileImage, setProfileImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const user = useSelector((state) => state.auth.user);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const name = sessionStorage.getItem("name");
+  const isAuthenticated = sessionStorage.getItem("isAuthenticated");
   const role = sessionStorage.getItem("role");
 
   useEffect(() => {
@@ -46,7 +45,7 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
         </button>
 
         <h1 className="text-lg font-semibold text-gray-700">
-          Welcome {user?.name || "Owner"} to your Dashboard
+          Welcome {name || "Owner"} to your Dashboard
         </h1>
       </div>
 
@@ -61,7 +60,7 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
           <RxAvatar size={28} />
         )}
         <span className="font-semibold text-gray-700 text-lg">
-          {user?.name || "Owner"}
+          {name || "Owner"}
         </span>
       </div>
     </div>

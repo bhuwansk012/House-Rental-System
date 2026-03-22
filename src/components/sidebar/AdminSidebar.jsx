@@ -5,16 +5,14 @@ import { FaAddressBook, FaUsers,FaUser } from "react-icons/fa";
 import { BsHousesFill } from "react-icons/bs";
 import { GrUserAdmin } from "react-icons/gr";
 import { IoLogOut } from "react-icons/io5";
-import { useDispatch } from 'react-redux';
-import { logout } from '../../features/auth/authSlice'
+import {logout } from '../../service/authService'
 import { toast } from 'react-toastify';   
 
 const AdminSidebar = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const handleLogout = () => {
-        dispatch(logout());
+        logout()
         toast.success("Logged out successfully!");
         navigate("/");
     };

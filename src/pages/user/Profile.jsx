@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { logout,profileLoaded } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { RxAvatar } from "react-icons/rx";
 import { getProfile } from "../../service/profileService";
+import {logout} from '../../service/authService'
 
 const Profile = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -21,12 +19,10 @@ const Profile = () => {
     try {
       setLoading(true);
       const data = await getProfile();
-
       const formattedData = {
         ...data,
         image: data?.images ? `http://localhost:8080${data.images}` : null,
       };
-
       setProfile(formattedData);
     } catch (error) {
       toast.error("Failed to load profile");
@@ -36,7 +32,7 @@ const Profile = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    logout()
     toast.success("Logged out successfully!");
     navigate("/");
   };
@@ -52,7 +48,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 to-gray-200 flex justify-center items-center p-4">
+    <div className="min-h-screen w-full bg-linear-to-br from-blue-100 to-gray-200 flex justify-center items-center p-4">
       <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-4xl">
 
         {/* Profile Image */}

@@ -60,7 +60,7 @@ const Properties = () => {
   }, [search, activeCategory, priceRange]);
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-12 bg-gray-100">
+    <section className="max-w-380 mx-auto px-6 py-12 bg-gray-100">
       <div className="text-center mb-10">
         <h2 className="text-4xl font-bold text-gray-800">
           Explore <span className="text-blue-600">Properties</span>

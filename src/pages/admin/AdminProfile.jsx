@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../service/profileService";
 import { toast } from "react-toastify";
@@ -9,13 +8,12 @@ import UpdateProfile from "../../modal/formmodal/UpdateProfile";
 
 const AdminProfile = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const role = sessionStorage.getItem("role");
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+  const name=sessionStorage.getItem("name");
 
 
 
@@ -61,7 +59,7 @@ const AdminProfile = () => {
             style={{ backgroundImage: `url(${profileData.image})` }}
           ></div>
         ) : (
-          <div className="h-40 bg-gradient-to-r from-blue-500 to-purple-600"></div>
+          <div className="h-40 bg-linear-to-r from-blue-500 to-purple-600"></div>
         )}
 
         {/* Profile */}

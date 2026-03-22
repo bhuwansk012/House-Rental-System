@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { loginService } from "../../service/authService";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../features/auth/authSlice"
+import {} from "../../service/authService"
+
+
 
 const Login = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -29,19 +28,11 @@ const Login = () => {
       if (response.status === 200) {
         toast.success(response.data.message);
 
-        const loggedData = {
-          id: response.data.id,
-          name: response.data.fullName,
-          role: response.data.role,
-          email: response.data.email,
-        };
-
-        dispatch(loginSuccess(loggedData));
-
         // Save token & role
+        sessionStorage.setItem("isAuthenticated",true);
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("role", response.data.role);
-
+        sessionStorage.setItem("name",response.data.fullName);
         console.log("Login Response:", response.data);
 
         // Redirect based on role
@@ -79,6 +70,8 @@ const Login = () => {
       }
     }
   };
+
+
 
   return (
     <div className="min-h-screen max-w-380 mx-auto flex items-center justify-center bg-white px-4 shadow-lg">

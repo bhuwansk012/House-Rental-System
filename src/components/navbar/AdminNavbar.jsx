@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { RxAvatar } from "react-icons/rx";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getProfile } from "../../service/profileService";
 import { toast } from "react-toastify";
 
 const AdminNavbar = () => {
   const role = sessionStorage.getItem("role");
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated = sessionStorage.getItem("isAuthenticated");
 
   const [profile, setProfile] = useState(null);
 
