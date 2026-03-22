@@ -1,228 +1,231 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { addProperty } from "../../service/ownerService";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Webcam from "react-webcam";
+import { Camera, Upload, X, CheckCircle, Image as ImageIcon } from "lucide-react";
 
 const AddProperty = () => {
   const navigate = useNavigate();
+  const webcamRef = useRef(null);
+
+  // States
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [citizenFront, setCitizenFront] = useState(null);
+  const [citizenBack, setCitizenBack] = useState(null);
+  const [passportPhoto, setPassportPhoto] = useState(null);
+  const [showCamera, setShowCamera] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
+  const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm();
+  const propertyType = watch("type");
 
+  // ---------------- CAMERA LOGIC ----------------
+  const capture = useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    // Convert base64 to File object to keep it consistent with other uploads
+    fetch(imageSrc)
+      .then(res => res.blob())
+      .then(blob => {
+        const file = new File([blob], "passport_photo.jpg", { type: "image/jpeg" });
+        setPassportPhoto(file);
+        setShowCamera(false);
+        toast.success("Photo captured!");
+      });
+  }, [webcamRef]);
+
+  // ---------------- FILE HANDLERS ----------------
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    if (files.length > 2) {
-      toast.warning("Maximum 2 images allowed");
+    if (files.length + selectedFiles.length > 5) {
+      toast.warning("Maximum 5 property images allowed");
       return;
     }
-    setSelectedFiles(files);
+    setSelectedFiles([...selectedFiles, ...files]);
   };
 
-  const preventNegative = (e) => {
-    if (e.target.value < 0) {
-      e.target.value = 0;
-      setValue(e.target.name, 0);
-    }
-  };
-
+  // ---------------- SUBMIT ----------------
   const onSubmit = async (data) => {
-    if (selectedFiles.length === 0) {
-      toast.error("Please upload at least one image");
+    if (!citizenFront || !citizenBack || !passportPhoto) {
+      toast.error("Missing identity documents or live photo");
       return;
     }
+
     try {
       setLoading(true);
       const formData = new FormData();
-      Object.keys(data).forEach((key) => formData.append(key, data[key]));
-      selectedFiles.forEach((file) => formData.append("images", file));
+      Object.keys(data).forEach(key => formData.append(key, data[key]));
+      selectedFiles.forEach(file => formData.append("images", file));
+      formData.append("citizenFront", citizenFront);
+      formData.append("citizenBack", citizenBack);
+      formData.append("passportPhoto", passportPhoto);
 
       await addProperty(formData);
-
-      toast.success("Property Added Successfully");
-      reset();
-      setSelectedFiles([]);
-      setTimeout(() => navigate("/owner/dashboard"), 1500);
+      toast.success("Property Published Successfully!");
+      navigate("/owner/dashboard");
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Failed to add property");
     } finally {
       setLoading(false);
     }
   };
 
+  const sectionStyle = "bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4";
+  const inputStyle = "w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none bg-gray-50";
+  const labelStyle = "block text-sm font-medium text-gray-700 mb-1 ml-1";
+
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4 flex justify-center items-start">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-4xl bg-white shadow-lg rounded-2xl p-8 space-y-8 border border-gray-200"
-      >
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
-          Add New Property
-        </h2>
+    <div className="min-h-screen bg-[#F8FAFC] py-12 px-4">
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-10 text-center">
+          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">List Your Property</h1>
+          <p className="text-gray-500 mt-2">Fill in the details below to reach thousands of potential tenants.</p>
+        </header>
 
-        {/* Basic Info */}
-        <section className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3 mb-2">
-            Basic Information
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="flex flex-col">
-              <input
-                {...register("title", { required: "Title is required" })}
-                placeholder="Title"
-                className="border border-gray-300 rounded-lg px-4 py-2 text-gray-800 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              />
-              {errors.title && <span className="text-red-600 text-base mt-1">{errors.title.message}</span>}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          
+          {/* 1. BASIC INFO */}
+          <section className={sectionStyle}>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="bg-indigo-600 w-2 h-6 rounded-full" />
+              <h3 className="text-lg font-bold text-gray-800">Basic Details</h3>
             </div>
-
-            <div className="flex flex-col">
-              <input
-                {...register("price", {
-                  required: "Price is required",
-                  min: { value: 1, message: "Price must be greater than 0" },
-                })}
-                type="number"
-                min="0"
-                onInput={preventNegative}
-                placeholder="Price (NPR)"
-                className="border border-gray-300 rounded-lg px-4 py-2 text-gray-800 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              />
-              {errors.price && <span className="text-red-600 text-base mt-1">{errors.price.message}</span>}
-            </div>
-
-            <div className="flex flex-col">
-              <select
-                {...register("type", { required: "Type is required" })}
-                className="border border-gray-300 rounded-lg px-4 py-2 text-gray-800 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              >
-                <option value="">Property Type</option>
-                <option value="HOUSE">HOUSE</option>
-                <option value="APARTMENT">APARTMENT</option>
-                <option value="ROOM">ROOM</option>
-              </select>
-              {errors.type && <span className="text-red-600 text-base mt-1">{errors.type.message}</span>}
-            </div>
-
-            <div className="flex flex-col">
-              <input
-                {...register("area", { required: "Area is required" })}
-                type="number"
-                min="0"
-                onInput={preventNegative}
-                placeholder="Area (sq ft)"
-                className="border border-gray-300 rounded-lg px-4 py-2 text-gray-800 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              />
-              {errors.area && <span className="text-red-600 text-base mt-1">{errors.area.message}</span>}
-            </div>
-          </div>
-
-          <div className="flex flex-col">
-            <textarea
-              {...register("description", { required: "Description is required" })}
-              placeholder="Description"
-              rows="4"
-              className="border border-gray-300 rounded-lg px-4 py-2 text-gray-800 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none"
-            />
-            {errors.description && <span className="text-red-600 text-base mt-1">{errors.description.message}</span>}
-          </div>
-        </section>
-
-        {/* Location Info */}
-        <section className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3 mb-2">
-            Location Information
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            {["district", "municipality", "wardNo", "tole"].map((field, idx) => (
-              <div key={idx} className="flex flex-col">
-                <input
-                  {...register(field, { required: `${field} is required` })}
-                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                  type={["wardNo"].includes(field) ? "number" : "text"}
-                  min="0"
-                  onInput={preventNegative}
-                  className="border border-gray-300 rounded-lg px-4 py-2 text-gray-800 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                />
-                {errors[field] && <span className="text-red-600 text-base mt-1">{errors[field].message}</span>}
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className={labelStyle}>Property Title</label>
+                <input {...register("title", { required: true })} placeholder="e.g. Modern 2BHK Apartment" className={inputStyle} />
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Property Details */}
-        <section className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3 mb-2">
-            Property Details
-          </h3>
-          <div className="grid md:grid-cols-3 gap-4">
-            {["houseName", "bedrooms", "bathrooms", "houseNo"].map((field, idx) => (
-              <div key={idx} className="flex flex-col">
-                <input
-                  {...register(field, { required: `${field} is required` })}
-                  placeholder={field.replace(/([A-Z])/g, ' $1').trim()}
-                  type={["bedrooms","bathrooms","houseNo","apartmentNo"].includes(field) ? "number" : "text"}
-                  min="0"
-                  onInput={preventNegative}
-                  className="border border-gray-300 rounded-lg px-4 py-2 text-gray-800 text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                />
-                {errors[field] && <span className="text-red-600 text-base mt-1">{errors[field].message}</span>}
+              <div>
+                <label className={labelStyle}>Price (NPR / Month)</label>
+                <input {...register("price", { required: true })} type="number" placeholder="0.00" className={inputStyle} />
               </div>
-            ))}
-          </div>
-        </section>
+              <div>
+                <label className={labelStyle}>Property Type</label>
+                <select {...register("type", { required: true })} className={inputStyle}>
+                  <option value="">Select Type</option>
+                  <option value="HOUSE">House</option>
+                  <option value="APARTMENT">Apartment</option>
+                  <option value="ROOM">Single Room</option>
+                </select>
+              </div>
+              <div>
+                <label className={labelStyle}>Area (Sq. Ft.)</label>
+                <input {...register("area", { required: true })} type="number" placeholder="e.g. 1200" className={inputStyle} />
+              </div>
+            </div>
+            <div>
+              <label className={labelStyle}>Description</label>
+              <textarea {...register("description")} rows="3" className={inputStyle} placeholder="Tell us about the amenities, neighborhood, etc." />
+            </div>
+          </section>
 
-        {/* Features */}
-        <section className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3 mb-2">
-            Additional Features
-          </h3>
-          <div className="flex gap-6 text-base">
-            <label className="flex items-center gap-2">
-              <input type="checkbox" {...register("furnished")} className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 focus:ring-2" />
-              Furnished
-            </label>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" {...register("parkingAvailable")} className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 focus:ring-2" />
-              Parking Available
-            </label>
-          </div>
-        </section>
+          {/* 2. LOCATION */}
+          <section className={sectionStyle}>
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Location Information</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <input {...register("district")} placeholder="District" className={inputStyle} />
+              <input {...register("municipality")} placeholder="Municipality" className={inputStyle} />
+              <input {...register("wardNo")} placeholder="Ward" className={inputStyle} />
+              <input {...register("tole")} placeholder="Tole/Street" className={inputStyle} />
+            </div>
+          </section>
 
-        {/* Images */}
-        <section className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3 mb-2">
-            Upload Images 
-          </h3>
-          <input
-            type="file"
-            multiple
-            onChange={handleFileChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-          />
-          <div className="flex gap-4 mt-2">
-            {selectedFiles.map((file, idx) => (
-              <img
-                key={idx}
-                src={URL.createObjectURL(file)}
-                alt="preview"
-                className="w-24 h-24 object-cover rounded-lg shadow"
-              />
-            ))}
-          </div>
-        </section>
+          {/* 3. IDENTITY VERIFICATION (WITH CAMERA) */}
+          <section className={sectionStyle}>
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Identity Verification</h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              
+              {/* Citizenship Front */}
+              <div className="relative border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center hover:border-indigo-400 transition-colors">
+                <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={(e) => setCitizenFront(e.target.files[0])} />
+                <Upload className="mx-auto text-gray-400 mb-2" />
+                <p className="text-xs font-medium text-gray-600">{citizenFront ? citizenFront.name : "Citizenship Front"}</p>
+                {citizenFront && <CheckCircle className="absolute top-2 right-2 text-green-500 w-5 h-5" />}
+              </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full py-3 rounded-xl text-white font-bold bg-indigo-600 hover:bg-indigo-700 transition-colors ${
-            loading ? "cursor-not-allowed bg-gray-400" : ""
-          }`}
-        >
-          {loading ? "Submitting..." : "Add Property"}
-        </button>
-      </form>
+              {/* Citizenship Back */}
+              <div className="relative border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center hover:border-indigo-400 transition-colors">
+                <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={(e) => setCitizenBack(e.target.files[0])} />
+                <Upload className="mx-auto text-gray-400 mb-2" />
+                <p className="text-xs font-medium text-gray-600">{citizenBack ? citizenBack.name : "Citizenship Back"}</p>
+                {citizenBack && <CheckCircle className="absolute top-2 right-2 text-green-500 w-5 h-5" />}
+              </div>
+
+              {/* LIVE PASSPORT PHOTO */}
+              <div className="relative border-2 border-dashed border-indigo-200 bg-indigo-50 rounded-2xl p-4 text-center flex flex-col items-center justify-center">
+                {passportPhoto ? (
+                  <div className="relative">
+                    <img src={URL.createObjectURL(passportPhoto)} className="w-16 h-16 rounded-full object-cover border-2 border-indigo-500" alt="Passport" />
+                    <button type="button" onClick={() => setPassportPhoto(null)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"><X size={12}/></button>
+                    <p className="text-xs mt-1 text-indigo-600 font-bold">Photo Ready</p>
+                  </div>
+                ) : (
+                  <button type="button" onClick={() => setShowCamera(true)} className="text-indigo-600 flex flex-col items-center">
+                    <Camera className="mb-1" />
+                    <span className="text-xs font-bold uppercase tracking-wider">Take Live Photo</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Camera Modal */}
+            {showCamera && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+                <div className="bg-white rounded-3xl overflow-hidden max-w-sm w-full relative">
+                  <Webcam
+                    audio={false}
+                    ref={webcamRef}
+                    screenshotFormat="image/jpeg"
+                    className="w-full h-auto"
+                    videoConstraints={{ facingMode: "user" }}
+                  />
+                  <div className="p-6 flex justify-between gap-4">
+                    <button type="button" onClick={() => setShowCamera(false)} className="flex-1 py-2 bg-gray-100 rounded-xl font-semibold">Cancel</button>
+                    <button type="button" onClick={capture} className="flex-1 py-2 bg-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200">Capture</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* 4. PROPERTY IMAGES */}
+          <section className={sectionStyle}>
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Property Images</h3>
+            <div className="flex flex-wrap gap-4">
+              <label className="w-24 h-24 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-all">
+                <input type="file" multiple className="hidden" onChange={handleFileChange} />
+                <ImageIcon className="text-gray-400 w-6 h-6" />
+                <span className="text-[10px] mt-1 font-bold text-gray-500">ADD</span>
+              </label>
+
+              {selectedFiles.map((file, idx) => (
+                <div key={idx} className="relative w-24 h-24">
+                  <img src={URL.createObjectURL(file)} className="w-full h-full object-cover rounded-2xl border" alt="preview" />
+                  <button 
+                    type="button" 
+                    onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== idx))}
+                    className="absolute -top-2 -right-2 bg-white shadow-md rounded-full p-1 text-red-500"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-4 rounded-2xl text-white font-bold text-lg shadow-xl transition-all transform active:scale-[0.98] ${
+              loading ? "bg-gray-400" : "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-indigo-200"
+            }`}
+          >
+            {loading ? "Processing..." : "Publish Property"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

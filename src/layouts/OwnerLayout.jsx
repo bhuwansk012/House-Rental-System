@@ -8,24 +8,24 @@ export default function OwnerLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
-
-      {/* Sidebar */}
+      
       <OwnerSidebar isOpen={isOpen} />
 
-      {/* Main Section */}
-      <div className="flex flex-col flex-1">
-
-        {/* Navbar */}
+      {/* Main wrapper shifts with sidebar */}
+      <div
+        className={`flex flex-col flex-1 transition-all duration-300 ${
+          isOpen ? "ml-65" : "ml-20"
+        }`}
+      >
         <OwnerNavbar
           isOpen={isOpen}
           toggleSidebar={() => setIsOpen(!isOpen)}
         />
 
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        {/* Push content below navbar */}
+        <main className="flex-1 overflow-y-auto p-6 pt-24">
           <Outlet />
         </main>
-
       </div>
     </div>
   );

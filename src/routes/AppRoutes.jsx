@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Forget from '../pages/auth/forget'
+import Reset from '../pages/auth/Reset'
 import Profile from '../pages/user/Profile'
 import Login from "../pages/auth/Login";
 import Register from '../pages/auth/Register'
@@ -31,7 +32,7 @@ function AppRoutes() {
     <Routes>
      
       <Route path="/forget-password" element={<Forget/>}/>
-    
+      <Route path="/password/reset:token" element={<Reset/>}/>
 
       {/* User Routes */}
       <Route element={<UserLayout />}>

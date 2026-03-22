@@ -47,7 +47,7 @@ const UserNavbar = () => {
               hover:bg-orange-500 hover:text-white transition-all duration-300 shadow-sm"
             >
               <RxAvatar size={20} />
-              <span className="max-w-[100px] truncate">
+              <span className="max-w-25 truncate">
                 {name || "User"}
               </span>
             </Link>

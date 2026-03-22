@@ -6,10 +6,10 @@ import {
   FiHome,
   FiCalendar,
   FiBell,
-  FiCreditCard,
   FiBarChart2,
   FiUser,
   FiPlusCircle,
+  FiCreditCard
 } from "react-icons/fi";
 
 const OwnerSidebar = ({ isOpen }) => {
@@ -31,8 +31,7 @@ const OwnerSidebar = ({ isOpen }) => {
       animate={{ width: isOpen ? 260 : 80 }}
       className="fixed top-0 left-0 h-screen bg-slate-900 text-slate-400 border-r border-slate-800 flex flex-col z-50 overflow-hidden"
     >
-
-      {/* --- BRAND --- */}
+      {/* BRAND */}
       <div className="h-20 flex items-center px-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md shrink-0">
@@ -54,9 +53,8 @@ const OwnerSidebar = ({ isOpen }) => {
         </div>
       </div>
 
-      {/* --- NAV --- */}
+      {/* NAV */}
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
-
         {menuItems.map((item, index) => (
           <NavLink
             key={index}
@@ -71,12 +69,10 @@ const OwnerSidebar = ({ isOpen }) => {
               }`
             }
           >
-            {/* Icon */}
             <span className={`${isOpen ? "text-lg" : "text-xl"} shrink-0`}>
               {item.icon}
             </span>
 
-            {/* Label */}
             <AnimatePresence>
               {isOpen && (
                 <motion.span
@@ -90,7 +86,6 @@ const OwnerSidebar = ({ isOpen }) => {
               )}
             </AnimatePresence>
 
-            {/* Tooltip (collapsed mode) */}
             {!isOpen && (
               <div className="absolute left-20 bg-slate-800 text-white text-[10px] font-semibold px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest border border-slate-700 shadow-lg">
                 {item.label}
@@ -100,16 +95,13 @@ const OwnerSidebar = ({ isOpen }) => {
         ))}
       </nav>
 
-      {/* --- FOOTER --- */}
+      {/* FOOTER */}
       <div className="p-4 border-t border-slate-800 bg-slate-950/40">
         <div className={`flex items-center ${isOpen ? "gap-3" : "justify-center"}`}>
-          
-          {/* Avatar */}
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold border-2 border-slate-800 shrink-0">
+          <div className="w-10 h-10 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold border-2 border-slate-800 shrink-0">
             {name.charAt(0)}
           </div>
 
-          {/* Info */}
           <AnimatePresence>
             {isOpen && (
               <motion.div
@@ -127,10 +119,8 @@ const OwnerSidebar = ({ isOpen }) => {
               </motion.div>
             )}
           </AnimatePresence>
-
         </div>
       </div>
-
     </motion.div>
   );
 };

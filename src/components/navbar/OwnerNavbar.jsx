@@ -29,12 +29,11 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
   return (
     <nav
       className={`fixed top-0 right-0 h-20 flex items-center justify-between px-6 z-40 transition-all duration-300
-      ${isOpen ? "left-64" : "left-20"} bg-white/80 backdrop-blur-xl border-b border-slate-200`}
+      ${isOpen ? "left-65" : "left-20"}
+      bg-white/80 backdrop-blur-xl border-b border-slate-200`}
     >
-      {/* --- LEFT --- */}
+      {/* LEFT */}
       <div className="flex items-center gap-5">
-
-        {/* Toggle */}
         <button
           onClick={toggleSidebar}
           className="p-2.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition active:scale-90"
@@ -42,35 +41,30 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
           <HiMenuAlt2 size={22} />
         </button>
 
-        {/* Title */}
         <div className="hidden md:flex flex-col leading-tight">
-          <h1 className="text-lg font-semibold bg-gradient-to-r from-slate-800 to-slate-500 bg-clip-text text-transparent">
+          <h1 className="text-lg font-semibold bg-linear-to-r from-slate-800 to-slate-500 bg-clip-text text-transparent">
             Dashboard
           </h1>
           <p className="text-[11px] text-slate-400">
-            Welcome back, <span className="font-medium text-slate-600">{name.split(" ")[0]}</span>
+            Welcome back,{" "}
+            <span className="font-medium text-slate-600">
+              {name.split(" ")[0]}
+            </span>
           </p>
         </div>
       </div>
 
-      {/* --- RIGHT --- */}
+      {/* RIGHT */}
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setShowDropdown(!showDropdown)}
-          className={`flex items-center gap-3 px-3 py-2 rounded-xl border transition-all
-          ${
-            showDropdown
-              ? "bg-white border-blue-200 shadow-sm"
-              : "bg-slate-100 border-transparent hover:bg-slate-200"
-          }`}
+          className="flex items-center gap-3 px-3 py-2 rounded-xl border bg-slate-100 hover:bg-slate-200 transition"
         >
-          {/* Avatar */}
           <div className="relative">
             <RxAvatar className="text-blue-600 bg-blue-50 rounded-full p-1" size={30} />
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
           </div>
 
-          {/* Info */}
           <div className="hidden sm:flex flex-col text-left leading-tight">
             <p className="text-sm font-medium text-slate-700">{name}</p>
             <p className="text-[10px] text-slate-400 uppercase tracking-wide">
@@ -78,7 +72,6 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
             </p>
           </div>
 
-          {/* Arrow */}
           <RxChevronDown
             size={16}
             className={`text-slate-400 transition-transform ${
@@ -87,11 +80,8 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
           />
         </button>
 
-        {/* --- DROPDOWN --- */}
         {showDropdown && (
-          <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-100 shadow-xl rounded-xl p-2 animate-in fade-in zoom-in duration-200">
-
-            {/* User Info */}
+          <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-100 shadow-xl rounded-xl p-2">
             <div className="px-4 py-3 rounded-lg bg-slate-50 mb-2">
               <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">
                 Signed in as
@@ -101,23 +91,20 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
               </p>
             </div>
 
-            {/* Profile */}
-            <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
+            <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg">
               <RxPerson size={18} />
               Profile
             </button>
 
             <div className="h-px bg-slate-100 my-2" />
 
-            {/* Logout */}
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-lg transition group"
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-lg"
             >
-              <RxExit size={18} className="group-hover:translate-x-1 transition" />
-              <span className="font-medium">Logout</span>
+              <RxExit size={18} />
+              Logout
             </button>
-
           </div>
         )}
       </div>

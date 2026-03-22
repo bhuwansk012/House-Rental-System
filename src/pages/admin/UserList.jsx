@@ -125,7 +125,7 @@ const UserList = () => {
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-4">
 
-                            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold shadow-sm">
+                            <div className="w-11 h-11 rounded-2xl bg-linear-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold shadow-sm">
                               {user.fullName?.charAt(0)}
                             </div>
 
@@ -145,7 +145,7 @@ const UserList = () => {
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-2 text-slate-600 font-medium">
                             <FiMail className="text-emerald-400 shrink-0" />
-                            <span className="truncate max-w-[220px]">
+                            <span className="truncate max-w-55">
                               {user.email}
                             </span>
                           </div>

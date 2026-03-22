@@ -4,31 +4,26 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { createBooking } from "../../service/bookService";
-const AddDetail = ({id}) => {
 
-
+const AddDetail = ({ id }) => {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
   } = useForm();
 
-
-
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     try {
-      await createBooking(id,data);
-      toast.success("Property  booking requesting has been submitted successfully!");
+      await createBooking(id, data);
+      toast.success("Property booking request submitted successfully!");
       reset();
       navigate("/properties");
     } catch (error) {
-      toast.error("Failed to save details");
-      console.error(error);
-      return;
+      toast.error("Failed to save details. Please try again.");
+      console.error("Booking Error:", error);
     }
-    reset();
   };
 
   return (
@@ -38,7 +33,6 @@ const AddDetail = ({id}) => {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
         {/* Address */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -57,7 +51,6 @@ const AddDetail = ({id}) => {
           )}
         </div>
 
-
         {/* Phone */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -66,7 +59,13 @@ const AddDetail = ({id}) => {
           <input
             type="tel"
             placeholder="Enter phone number"
-            {...register("phone", { required: "Phone is required" })}
+            {...register("phone", { 
+              required: "Phone is required",
+              pattern: {
+                value: /^[0-9+\s-]{8,15}$/,
+                message: "Invalid phone number format"
+              }
+            })}
             className={`mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm bg-transparent focus:ring-2 focus:ring-blue-400 focus:outline-none ${
               errors.phone ? "border-red-500" : "border-gray-300"
             }`}
@@ -78,9 +77,12 @@ const AddDetail = ({id}) => {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-medium transition"
+          disabled={isSubmitting}
+          className={`w-full text-white py-2 rounded-lg font-medium transition ${
+            isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
-          Add Details
+          {isSubmitting ? "Submitting..." : "Add Details"}
         </button>
       </form>
     </div>
