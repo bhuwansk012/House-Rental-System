@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { FiEye, FiEyeSlash, FiMail, FiLock, FiArrowRight, FiRotateCcw } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiMail, FiLock, FiArrowRight, FiRotateCcw } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { loginService } from "../../service/authService";
 
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const {
     register,
     handleSubmit,
@@ -20,8 +20,10 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       const response = await loginService(data);
+
       if (response.status === 200) {
         toast.success(response.data.message);
+
         sessionStorage.setItem("email", response.data.email);
         sessionStorage.setItem("isAuthenticated", true);
         sessionStorage.setItem("token", response.data.token);
@@ -41,111 +43,149 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-6 font-sans relative overflow-hidden">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100 rounded-full blur-[120px] opacity-50" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-100 rounded-full blur-[120px] opacity-50" />
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+      {/* Background Blobs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100 rounded-full blur-[120px] opacity-40" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-100 rounded-full blur-[120px] opacity-40" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-[440px] z-10"
+        className="w-full max-w-md z-10"
       >
-        <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white p-8 md:p-12">
-          
-          {/* Header */}
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-black text-slate-800 tracking-tight mb-2">
+
+        <div className="bg-white rounded-3xl shadow-xl border border-white p-8 md:p-10">
+
+          {/* HEADER */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">
               Welcome <span className="text-blue-600">Back</span>
             </h1>
-            <p className="text-slate-500 font-medium">Please enter your details to sign in</p>
+            <p className="text-sm text-slate-500 mt-2 font-medium">
+              Sign in to continue to your dashboard
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            
-            {/* Email Field */}
-            <div className="space-y-2">
-              <label className="text-[11px] font-black uppercase tracking-[0.1em] text-slate-400 ml-4 block">
-                Work Email
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+
+            {/* EMAIL */}
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 ml-1">
+                Email Address
               </label>
+
               <div className="relative group">
-                <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition" />
+
                 <input
                   type="email"
                   placeholder="alex@example.com"
-                  className={`w-full pl-12 pr-6 py-4 bg-slate-50 border rounded-2xl outline-none transition-all font-medium text-slate-700
-                    ${errors.email ? "border-red-200 focus:ring-4 focus:ring-red-500/5" : "border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"}
-                  `}
+                  className={`w-full pl-11 pr-4 py-3.5 bg-slate-50 border rounded-2xl text-sm font-medium text-slate-700 outline-none transition-all
+                  ${errors.email
+                      ? "border-red-200 focus:ring-2 focus:ring-red-500/10"
+                      : "border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
+                  }`}
                   {...register("email", { required: "Email is required" })}
                 />
               </div>
-              {errors.email && <p className="text-red-500 text-[10px] font-bold uppercase ml-4">{errors.email.message}</p>}
+
+              {errors.email && (
+                <p className="text-red-500 text-[11px] font-semibold mt-1 ml-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
-            {/* Password Field */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center ml-4 pr-4">
-                <label className="text-[11px] font-black uppercase tracking-[0.1em] text-slate-400 block">
-                  Security Code
+            {/* PASSWORD */}
+            <div>
+              <div className="flex justify-between items-center mb-2 ml-1">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  Password
                 </label>
-                <Link to="/forget-password" size={18} className="text-[11px] font-black uppercase text-blue-500 hover:text-blue-700 transition-colors">
-                  Forgot?
+
+                <Link
+                  to="/forget-password"
+                  className="text-[11px] font-semibold text-blue-500 hover:text-blue-700 transition"
+                >
+                  Forgot password?
                 </Link>
               </div>
+
               <div className="relative group">
-                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition" />
+
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  className={`w-full pl-12 pr-12 py-4 bg-slate-50 border rounded-2xl outline-none transition-all font-medium text-slate-700
-                    ${errors.password ? "border-red-200 focus:ring-4 focus:ring-red-500/5" : "border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"}
-                  `}
+                  className={`w-full pl-11 pr-11 py-3.5 bg-slate-50 border rounded-2xl text-sm font-medium text-slate-700 outline-none transition-all
+                  ${errors.password
+                      ? "border-red-200 focus:ring-2 focus:ring-red-500/10"
+                      : "border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
+                  }`}
                   {...register("password", { required: "Password is required" })}
                 />
+
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
                 >
-                  {showPassword ? <FiEyeSlash size={18} /> : <FiEye size={18} />}
+                  {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                 </button>
               </div>
-              {errors.password && <p className="text-red-500 text-[10px] font-bold uppercase ml-4">{errors.password.message}</p>}
+
+              {errors.password && (
+                <p className="text-red-500 text-[11px] font-semibold mt-1 ml-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-3 pt-4">
+            {/* BUTTONS */}
+            <div className="pt-3 space-y-3">
+
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg shadow-slate-200 hover:bg-blue-600 hover:shadow-blue-200 transition-all active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-2 group"
+                className="w-full flex items-center justify-center gap-2 py-3.5 bg-slate-900 text-white rounded-2xl font-semibold text-sm hover:bg-blue-600 transition active:scale-[0.98] disabled:opacity-70"
               >
-                {isSubmitting ? "Authenticating..." : (
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Logining...
+                  </span>
+                ) : (
                   <>
-                    Sign In <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                    Sign In <FiArrowRight />
                   </>
                 )}
               </button>
-              
+
               <button
                 type="button"
                 onClick={() => reset()}
-                className="w-full py-3 text-slate-400 text-xs font-bold uppercase tracking-widest hover:text-slate-600 flex items-center justify-center gap-2 transition-colors"
+                className="w-full flex items-center justify-center gap-2 text-slate-400 hover:text-slate-600 text-xs font-bold uppercase tracking-widest transition"
               >
                 <FiRotateCcw size={14} /> Clear Form
               </button>
+
             </div>
 
           </form>
 
-          {/* Footer Link */}
-          <div className="mt-10 text-center">
-            <p className="text-slate-400 text-sm font-medium">
+          {/* FOOTER */}
+          <div className="mt-8 text-center border-t border-slate-100 pt-5">
+            <p className="text-sm text-slate-500 font-medium">
               New here?{" "}
-              <Link to="/register" className="text-slate-800 font-black hover:text-blue-600 transition-colors">
+              <Link
+                to="/register"
+                className="font-bold text-slate-800 hover:text-blue-600 transition"
+              >
                 Create an account
               </Link>
             </p>
           </div>
+
         </div>
       </motion.div>
     </div>

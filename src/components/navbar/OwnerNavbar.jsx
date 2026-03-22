@@ -10,7 +10,6 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
   const name = sessionStorage.getItem("name") || "Owner";
   const email = sessionStorage.getItem("email") || "admin@dashboard.com";
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -29,70 +28,96 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <nav
-      className={`fixed top-0 right-0 h-20 flex items-center justify-between px-8 z-40 transition-all duration-300 ease-in-out
-      ${isOpen ? "left-64" : "left-20"} bg-white/80 backdrop-blur-md border-b border-slate-200/60`}
+      className={`fixed top-0 right-0 h-20 flex items-center justify-between px-6 z-40 transition-all duration-300
+      ${isOpen ? "left-64" : "left-20"} bg-white/80 backdrop-blur-xl border-b border-slate-200`}
     >
-      {/* LEFT SIDE: Brand & Toggle */}
-      <div className="flex items-center gap-6">
+      {/* --- LEFT --- */}
+      <div className="flex items-center gap-5">
+
+        {/* Toggle */}
         <button
           onClick={toggleSidebar}
-          className="p-2 rounded-xl bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-all active:scale-90"
+          className="p-2.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition active:scale-90"
         >
-          <HiMenuAlt2 size={24} />
+          <HiMenuAlt2 size={22} />
         </button>
 
-        <div className="hidden md:block">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-500 bg-clip-text text-transparent">
+        {/* Title */}
+        <div className="hidden md:flex flex-col leading-tight">
+          <h1 className="text-lg font-semibold bg-gradient-to-r from-slate-800 to-slate-500 bg-clip-text text-transparent">
             Dashboard
           </h1>
-          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-            Welcome back, {name.split(" ")[0]}
+          <p className="text-[11px] text-slate-400">
+            Welcome back, <span className="font-medium text-slate-600">{name.split(" ")[0]}</span>
           </p>
         </div>
       </div>
 
-      {/* RIGHT SIDE: Profile Dropdown */}
+      {/* --- RIGHT --- */}
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setShowDropdown(!showDropdown)}
-          className={`flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-2xl border transition-all duration-200
-          ${showDropdown ? "bg-white border-blue-200 shadow-sm" : "bg-slate-50 border-transparent hover:bg-slate-100"}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-xl border transition-all
+          ${
+            showDropdown
+              ? "bg-white border-blue-200 shadow-sm"
+              : "bg-slate-100 border-transparent hover:bg-slate-200"
+          }`}
         >
+          {/* Avatar */}
           <div className="relative">
-            <RxAvatar size={36} className="text-blue-600 bg-blue-50 rounded-full p-0.5" />
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+            <RxAvatar className="text-blue-600 bg-blue-50 rounded-full p-1" size={30} />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
           </div>
-          
-          <div className="hidden sm:block text-left">
-            <p className="text-sm font-bold text-slate-700 leading-none">{name}</p>
-            <p className="text-[10px] font-semibold text-slate-400 mt-1 uppercase tracking-tight">Administrator</p>
+
+          {/* Info */}
+          <div className="hidden sm:flex flex-col text-left leading-tight">
+            <p className="text-sm font-medium text-slate-700">{name}</p>
+            <p className="text-[10px] text-slate-400 uppercase tracking-wide">
+              Owner
+            </p>
           </div>
-          
-          <RxChevronDown size={16} className={`text-slate-400 transition-transform duration-300 ${showDropdown ? "rotate-180" : ""}`} />
+
+          {/* Arrow */}
+          <RxChevronDown
+            size={16}
+            className={`text-slate-400 transition-transform ${
+              showDropdown ? "rotate-180" : ""
+            }`}
+          />
         </button>
 
-        {/* UPGRADED DROPDOWN */}
+        {/* --- DROPDOWN --- */}
         {showDropdown && (
-          <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.08)] rounded-2xl p-2 animate-in fade-in zoom-in duration-200">
-            <div className="px-4 py-3 mb-2 bg-slate-50/50 rounded-xl">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Signed in as</p>
-              <p className="text-sm font-medium text-slate-700 truncate">{email}</p>
+          <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-100 shadow-xl rounded-xl p-2 animate-in fade-in zoom-in duration-200">
+
+            {/* User Info */}
+            <div className="px-4 py-3 rounded-lg bg-slate-50 mb-2">
+              <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">
+                Signed in as
+              </p>
+              <p className="text-sm font-medium text-slate-700 truncate">
+                {email}
+              </p>
             </div>
 
-            <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">
+            {/* Profile */}
+            <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
               <RxPerson size={18} />
-              View Profile
+              Profile
             </button>
 
-            <div className="h-px bg-slate-100 my-2 mx-2" />
+            <div className="h-px bg-slate-100 my-2" />
 
+            {/* Logout */}
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-lg transition-colors group"
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-lg transition group"
             >
-              <RxExit size={18} className="group-hover:translate-x-1 transition-transform" />
-              <span className="font-semibold">Log out</span>
+              <RxExit size={18} className="group-hover:translate-x-1 transition" />
+              <span className="font-medium">Logout</span>
             </button>
+
           </div>
         )}
       </div>

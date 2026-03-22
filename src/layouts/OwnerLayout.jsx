@@ -7,20 +7,25 @@ export default function OwnerLayout() {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
 
       {/* Sidebar */}
       <OwnerSidebar isOpen={isOpen} />
 
-      {/* Navbar */}
-      <OwnerNavbar isOpen={isOpen} toggleSidebar={() => setIsOpen(!isOpen)} />
+      {/* Main Section */}
+      <div className="flex flex-col flex-1">
 
-      {/* Main Content */}
-      <div
-        className={`transition-all duration-300 pt-20 p-6
-        ${isOpen ? "ml-60" : "ml-20"}`}
-      >
-        <Outlet />
+        {/* Navbar */}
+        <OwnerNavbar
+          isOpen={isOpen}
+          toggleSidebar={() => setIsOpen(!isOpen)}
+        />
+
+        {/* Content */}
+        <main className="flex-1 overflow-y-auto p-6">
+          <Outlet />
+        </main>
+
       </div>
     </div>
   );

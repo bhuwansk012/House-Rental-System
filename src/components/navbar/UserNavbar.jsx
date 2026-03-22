@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { NavLink, Link } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
 
-
 const UserNavbar = () => {
-
   const isAuthenticated = sessionStorage.getItem("isAuthenticated");
-  const name=sessionStorage.getItem("name");
+  const name = sessionStorage.getItem("name");
   const role = sessionStorage.getItem("role");
 
-
-
   const navLinkClass = ({ isActive }) =>
-    `relative pb-1 transition-all duration-300 text-gray-700 hover:text-orange-500 
+    `relative text-sm font-medium text-slate-600 transition-all duration-300 
+     hover:text-orange-500 pb-1
      after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] 
      after:bg-orange-500 after:transition-all after:duration-300 ${
        isActive
@@ -21,53 +18,49 @@ const UserNavbar = () => {
      }`;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
-      <nav className="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200">
+      <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
-        {/* Logo */}
+        {/* --- LOGO --- */}
         <Link
           to="/"
-          className="text-2xl font-extrabold tracking-wide text-orange-500"
+          className="text-xl md:text-2xl font-extrabold tracking-tight text-orange-500"
         >
-          House<span className="text-gray-800">Rent</span>
+          House<span className="text-slate-900">Rent</span>
         </Link>
 
-        {/* Menu */}
-        <ul className="hidden md:flex items-center gap-10 font-medium">
+        {/* --- MENU --- */}
+        <ul className="hidden md:flex items-center gap-8">
           <li><NavLink to="/" className={navLinkClass}>Home</NavLink></li>
           <li><NavLink to="/properties" className={navLinkClass}>Properties</NavLink></li>
           <li><NavLink to="/about" className={navLinkClass}>About</NavLink></li>
         </ul>
 
-        {/* Auth Section */}
-        {isAuthenticated && role === "TENANT" ? (
-          <div className="hidden md:block">
+        {/* --- RIGHT SECTION --- */}
+        <div className="hidden md:flex items-center">
+
+          {isAuthenticated && role === "TENANT" ? (
             <Link
               to="/profile"
-              className="flex items-center gap-2 px-5 py-2 rounded-full 
-              bg-white border border-gray-300 
-              text-blue-900 font-medium
-              shadow-sm hover:shadow-md
-              hover:bg-blue-900 hover:text-white
-              transition-all duration-300"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl 
+              bg-slate-100 text-slate-700 font-medium text-sm
+              hover:bg-orange-500 hover:text-white transition-all duration-300 shadow-sm"
             >
-              
-                <RxAvatar size={22} />
-      
-
-              <span>{name || "User"}</span>
+              <RxAvatar size={20} />
+              <span className="max-w-[100px] truncate">
+                {name || "User"}
+              </span>
             </Link>
-          </div>
-        ) : (
-          <div className="hidden md:block">
+          ) : (
             <Link
               to="/login"
-              className="px-5 py-2 rounded-xl font-medium border border-gray-300 text-blue-900 hover:bg-gray-500 hover:text-white transition-all duration-300"
+              className="px-5 py-2 rounded-xl text-sm font-medium border border-slate-300 text-slate-700 hover:bg-slate-900 hover:text-white transition-all duration-300"
             >
               Login
             </Link>
-          </div>
-        )}
+          )}
+
+        </div>
 
       </nav>
     </header>

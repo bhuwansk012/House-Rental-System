@@ -11,19 +11,20 @@ const Forget = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return toast.error("Please enter your email address");
+
+    if (!email) {
+      return toast.error("Please enter your email address");
+    }
 
     setLoading(true);
+
     try {
-      // Logic for forgot password API call would go here
-      // await forgetPassword(email);
-      
-      // Simulating API delay
+      // Simulated API call
       setTimeout(() => {
         setIsSubmitted(true);
         setLoading(false);
         toast.success("Reset link sent to your email!");
-      }, 1500);
+      }, 1200);
     } catch (error) {
       toast.error("Failed to send reset link. Try again.");
       setLoading(false);
@@ -32,46 +33,61 @@ const Forget = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-6 font-sans">
-      <motion.div 
+
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full"
+        className="w-full max-w-md"
       >
-        {/* --- CARD --- */}
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 border border-white p-10 relative overflow-hidden">
-          
-          {/* Decorative Background Blob */}
-          <div className="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-indigo-50 rounded-full opacity-50 blur-3xl" />
+
+        {/* CARD */}
+        <div className="relative bg-white rounded-3xl shadow-xl border border-white p-8 md:p-10 overflow-hidden">
+
+          {/* Background decoration */}
+          <div className="absolute -top-20 -right-20 w-60 h-60 bg-indigo-50 rounded-full blur-3xl opacity-40" />
 
           <AnimatePresence mode="wait">
+
             {!isSubmitted ? (
               <motion.div
                 key="form"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -15 }}
               >
-                {/* ICON & TITLE */}
-                <div className="mb-8 text-center">
-                  <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-50">
-                    <FiSend size={28} />
+
+                {/* HEADER */}
+                <div className="text-center mb-8">
+                  <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                    <FiSend size={24} />
                   </div>
-                  <h1 className="text-3xl font-black text-slate-800 tracking-tight">Forgot <span className="text-indigo-600">Password?</span></h1>
-                  <p className="text-slate-500 mt-2 font-medium">No worries! Enter your email and we'll send you a recovery link.</p>
+
+                  <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+                    Forgot <span className="text-indigo-600">Password?</span>
+                  </h1>
+
+                  <p className="text-sm text-slate-500 mt-2 leading-relaxed font-medium">
+                    Enter your email address and we’ll send you a secure reset link.
+                  </p>
                 </div>
 
                 {/* FORM */}
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="relative group">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-1 block">Email Address</label>
-                    <div className="relative">
-                      <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <form onSubmit={handleSubmit} className="space-y-5">
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+                      Email Address
+                    </label>
+
+                    <div className="relative group">
+                      <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition" />
+
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="name@company.com"
-                        className="w-full pl-11 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-slate-700"
+                        className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                         required
                       />
                     </div>
@@ -80,58 +96,74 @@ const Forget = () => {
                   <button
                     disabled={loading}
                     type="submit"
-                    className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-xl shadow-indigo-100 hover:bg-indigo-600 transition-all active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-2"
+                    className="w-full flex items-center justify-center gap-2 py-3.5 bg-slate-900 text-white rounded-2xl font-semibold text-sm hover:bg-indigo-600 transition active:scale-[0.98] disabled:opacity-70"
                   >
                     {loading ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
-                      "Send Reset Link"
+                      <>
+                        <FiSend size={16} />
+                        Send Reset Link
+                      </>
                     )}
                   </button>
+
                 </form>
               </motion.div>
             ) : (
               <motion.div
                 key="success"
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-4"
               >
-                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-50">
-                  <FiCheckCircle size={40} />
+
+                <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-5 shadow-sm">
+                  <FiCheckCircle size={32} />
                 </div>
-                <h2 className="text-2xl font-black text-slate-800 tracking-tight">Check your email</h2>
-                <p className="text-slate-500 mt-3 font-medium px-4">
-                  We've sent a password recovery link to: <br/>
-                  <span className="text-slate-900 font-bold italic">{email}</span>
+
+                <h2 className="text-xl md:text-2xl font-extrabold text-slate-800">
+                  Check your email
+                </h2>
+
+                <p className="text-sm text-slate-500 mt-3 leading-relaxed">
+                  We’ve sent a password reset link to:
+                  <br />
+                  <span className="text-slate-900 font-semibold break-all">
+                    {email}
+                  </span>
                 </p>
-                
-                <button 
+
+                <button
                   onClick={() => setIsSubmitted(false)}
-                  className="mt-8 text-indigo-600 font-bold text-sm hover:underline cursor-pointer"
+                  className="mt-6 text-indigo-600 font-semibold text-sm hover:underline"
                 >
-                  Didn't get the email? Try again
+                  Didn’t receive it? Try again
                 </button>
+
               </motion.div>
             )}
+
           </AnimatePresence>
 
           {/* BACK TO LOGIN */}
-          <div className="mt-10 pt-6 border-t border-slate-50 text-center">
-            <Link 
-              to="/login" 
-              className="inline-flex items-center gap-2 text-slate-400 font-bold text-sm hover:text-slate-800 transition-colors group"
+          <div className="mt-8 pt-5 border-t border-slate-100 text-center">
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-2 text-slate-500 text-sm font-semibold hover:text-slate-800 transition group"
             >
               <FiArrowLeft className="group-hover:-translate-x-1 transition-transform" />
               Back to Login
             </Link>
           </div>
+
         </div>
 
-        {/* FOOTER HINT */}
-        <p className="text-center mt-8 text-slate-400 text-xs font-bold uppercase tracking-widest">
+        {/* FOOTER */}
+        <p className="text-center mt-6 text-[11px] font-bold tracking-widest uppercase text-slate-400">
           Secure Authentication System
         </p>
+
       </motion.div>
     </div>
   );

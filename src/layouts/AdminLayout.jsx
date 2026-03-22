@@ -6,25 +6,25 @@ function AdminLayout() {
   return (
     <div className="flex h-screen overflow-hidden">
 
-      {/* Fixed Sidebar */}
-      <AdminSidebar className="fixed top-0 left-0 h-screen z-50" />
+      {/* Sidebar */}
+      <AdminSidebar />
 
-      {/* Main Content */}
-      <div className="flex-1  flex flex-col">
+      {/* Main Area */}
+      <div className="flex flex-col flex-1">
 
-        {/* Fixed Navbar */}
-        <div className="fixed top-0 left-60 right-0 z-40">
+        {/* Navbar */}
+        <div className="h-20 shrink-0">
           <AdminNavbar />
         </div>
 
-        {/* Scrollable Content */}
-        <div className="mt-16 flex-1 overflow-auto bg-gray-50">
+        {/* Content */}
+        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
           <Outlet />
-        </div>
+        </main>
 
       </div>
     </div>
   );
 }
 
-export default  AdminLayout
+export default AdminLayout;
