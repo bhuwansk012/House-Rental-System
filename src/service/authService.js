@@ -1,4 +1,5 @@
 import {REGISTER_END_POINT,LOGIN_END} from './url'
+import {forget_password,reset_password} from './url'
 import axios from 'axios';
 
 //Register Service
@@ -22,4 +23,12 @@ export const logout=()=>{
     sessionStorage.removeItem("name");
     sessionStorage.clear();
 
+}
+export const forget = async (email) => {
+  const response = await axios.post(forget_password, { email });
+  return response;
+};
+export const reset=async(token, password)=>{
+  const response=await axios.put(reset_password,{token,password});
+  return response;
 }

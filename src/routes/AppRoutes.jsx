@@ -32,8 +32,7 @@ function AppRoutes() {
     <Routes>
      
       <Route path="/forget-password" element={<Forget/>}/>
-      <Route path="/password/reset:token" element={<Reset/>}/>
-
+      <Route path="/password/reset/:token" element={<Reset />} />
       {/* User Routes */}
       <Route element={<UserLayout />}>
         <Route path="/" element={<Home />} />

@@ -1,30 +1,38 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMail, FiArrowLeft, FiSend, FiCheckCircle } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { forget } from "../../service/authService";
 
 const Forget = () => {
-  const [email, setEmail] = useState("");
+  const { register, handleSubmit, formState: { errors }, watch } = useForm();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const emailValue = watch("email"); // to display after submit
 
-    if (!email) {
+  const onSubmit = async (data) => {
+    if (!data.email) {
       return toast.error("Please enter your email address");
     }
 
     setLoading(true);
 
     try {
-      // Simulated API call
-      setTimeout(() => {
-        setIsSubmitted(true);
+      const response = await forget(data.email);
+
+      if (response.status === 200) {
+        setTimeout(() => {
+          setIsSubmitted(true);
+          setLoading(false);
+          toast.success("Reset link sent to your email!");
+        }, 1200);
+      } else {
+        toast.error("Something was wrong!");
         setLoading(false);
-        toast.success("Reset link sent to your email!");
-      }, 1200);
+      }
     } catch (error) {
       toast.error("Failed to send reset link. Try again.");
       setLoading(false);
@@ -40,21 +48,14 @@ const Forget = () => {
         className="w-full max-w-md"
       >
 
-        {/* CARD */}
         <div className="relative bg-white rounded-3xl shadow-xl border border-white p-8 md:p-10 overflow-hidden">
 
-          {/* Background decoration */}
           <div className="absolute -top-20 -right-20 w-60 h-60 bg-indigo-50 rounded-full blur-3xl opacity-40" />
 
           <AnimatePresence mode="wait">
 
             {!isSubmitted ? (
-              <motion.div
-                key="form"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, x: -15 }}
-              >
+              <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -15 }}>
 
                 {/* HEADER */}
                 <div className="text-center mb-8">
@@ -72,7 +73,7 @@ const Forget = () => {
                 </div>
 
                 {/* FORM */}
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
@@ -84,13 +85,23 @@ const Forget = () => {
 
                       <input
                         type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="name@company.com"
+                        {...register("email", {
+                          required: "Email is required",
+                          pattern: {
+                            value: /^\S+@\S+$/i,
+                            message: "Invalid email format"
+                          }
+                        })}
                         className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                        required
                       />
                     </div>
+
+                    {errors.email && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
 
                   <button
@@ -111,12 +122,7 @@ const Forget = () => {
                 </form>
               </motion.div>
             ) : (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-4"
-              >
+              <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-4">
 
                 <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-5 shadow-sm">
                   <FiCheckCircle size={32} />
@@ -130,7 +136,7 @@ const Forget = () => {
                   We’ve sent a password reset link to:
                   <br />
                   <span className="text-slate-900 font-semibold break-all">
-                    {email}
+                    {emailValue}
                   </span>
                 </p>
 
@@ -146,7 +152,6 @@ const Forget = () => {
 
           </AnimatePresence>
 
-          {/* BACK TO LOGIN */}
           <div className="mt-8 pt-5 border-t border-slate-100 text-center">
             <Link
               to="/login"
@@ -159,7 +164,6 @@ const Forget = () => {
 
         </div>
 
-        {/* FOOTER */}
         <p className="text-center mt-6 text-[11px] font-bold tracking-widest uppercase text-slate-400">
           Secure Authentication System
         </p>
