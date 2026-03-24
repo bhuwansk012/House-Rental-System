@@ -62,7 +62,7 @@ const OurProperty = ({ data = [] }) => {
               </motion.div>
             ))
           ) : (
-            <div className="col-span-full flex flex-col items-center justify-center py-24 bg-white rounded-[2rem] border border-dashed border-slate-200 shadow-sm">
+            <div className="col-span-full flex flex-col items-center justify-center py-24 bg-white rounded-4xl border border-dashed border-slate-200 shadow-sm">
 
               <div className="p-4 bg-slate-100 rounded-xl mb-5">
                 <FiSearch size={22} className="text-slate-400" />
@@ -84,26 +84,8 @@ const OurProperty = ({ data = [] }) => {
         >
           <div className="flex flex-col md:flex-row items-center gap-6 bg-slate-900 rounded-4xl px-6 py-4 shadow-2xl">
 
-            {/* Avatars */}
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map(i => (
-                <div
-                  key={i}
-                  className="w-10 h-10 rounded-full border-2 border-slate-900 overflow-hidden"
-                >
-                  <img
-                    src={`https://i.pravatar.cc/100?img=${i + 10}`}
-                    alt="user"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Text */}
-            <p className="text-white/70 text-sm text-center md:text-left">
-              Join <span className="text-white font-bold">2,400+</span> users finding homes this month
-            </p>
+          
+             
 
             {/* Button */}
             <button

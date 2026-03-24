@@ -57,15 +57,15 @@ const Hero = () => {
           {/* Mini Stats Grid */}
           <div className="grid grid-cols-3 gap-8 pt-8 border-t border-slate-50">
             <div>
-              <p className="text-2xl font-black text-slate-900">2.5k+</p>
+              
               <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Listings</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900">1.8k+</p>
+              
               <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Happy Tenants</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900">99%</p>
+              
               <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Security</p>
             </div>
           </div>

@@ -216,6 +216,9 @@ const Booking = () => {
                               <p className="text-xs text-slate-500">
                                 {booking.tenant.email}
                               </p>
+                              <p className="text-xs text-slate-500">
+                                {booking.phone},{booking.address}
+                              </p>
                             </div>
                           </div>
                         </div>

@@ -104,3 +104,9 @@ export const updatePropertyStatus = async (id, status) => {
     throw error;
   }
 };
+
+export const veiwProperty=async(id)=>{
+  let response;
+  response=await api.get(`/admin/property/review/${id}`);
+  return response;
+}

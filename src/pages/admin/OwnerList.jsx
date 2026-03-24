@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiTrash2, FiSearch, FiUser, FiMail, FiShield } from "react-icons/fi";
+import { FiTrash2, FiSearch, FiUser, FiMail, FiShield ,FiPhone} from "react-icons/fi";
 import { getAdminOwners, deleteOwnerByAdmin } from "../../service/adminService";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
@@ -89,7 +89,10 @@ const OwnerList = () => {
                     Profile
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold uppercase tracking-widest border-b">
-                    Contact
+                    Email
+                  </th>
+                  <th className="py-4 px-6 text-left text-xs font-bold uppercase tracking-widest border-b">
+                    PhoneNo.
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold uppercase tracking-widest border-b">
                     Status
@@ -123,7 +126,7 @@ const OwnerList = () => {
                         {/* PROFILE */}
                         <td className="py-5 px-6">
                           <div className="flex items-center gap-4">
-                            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center text-violet-600 font-bold shadow-sm">
+                            <div className="w-11 h-11 rounded-2xl bg-linear-to-br from-violet-100 to-indigo-100 flex items-center justify-center text-violet-600 font-bold shadow-sm">
                               {owner.fullName?.charAt(0) || <FiUser />}
                             </div>
 
@@ -142,8 +145,16 @@ const OwnerList = () => {
                         <td className="py-5 px-6">
                           <div className="flex items-center gap-2 text-slate-600 text-sm font-medium">
                             <FiMail className="text-violet-400 shrink-0" />
-                            <span className="truncate max-w-[200px]">
+                            <span className="truncate max-w-50">
                               {owner.email}
+                            </span>
+                          </div>
+                        </td>
+                         <td className="py-5 px-6">
+                          <div className="flex items-center gap-2 text-slate-600 text-sm font-medium">
+                            <FiPhone className="text-violet-400 shrink-0" />
+                            <span className="truncate max-w-50">
+                              {owner.phone}
                             </span>
                           </div>
                         </td>

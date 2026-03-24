@@ -17,6 +17,7 @@ import OwnerProfile from "../pages/owner/OwnerProfile";
 import Report from "../pages/owner/Report";
 
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import Details from '../pages/admin/Details';
 import UserLayout from "../layouts/UserLayout";
 import OwnerLayout from "../layouts/OwnerLayout";
 import AdminLayout from "../layouts/AdminLayout";
@@ -26,6 +27,7 @@ import BookingList from "../pages/admin/BookingList";
 import OwnerList from "../pages/admin/OwnerList";
 import PropertyDetails from "../pages/user/PropertyDetails";
 import AdminProfile from '../pages/admin/AdminProfile'
+
 
 function AppRoutes() {
   return (
@@ -63,6 +65,7 @@ function AppRoutes() {
         <Route path="/admin/bookings" element={<BookingList />} />
         <Route path="/admin/owners" element={<OwnerList />} />
         <Route path="/admin/profile" element={<AdminProfile/>}/>
+        <Route path="admin/property/details/:id" element={<Details/>}/>
       </Route>
       
     </Routes>

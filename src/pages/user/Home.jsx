@@ -57,7 +57,7 @@ const Home = () => {
 
         {/* SECTION HEADER */}
         <div className="mt-20 mb-10 flex items-center gap-4">
-          <div className="h-[2px] w-10 bg-indigo-600 rounded-full" />
+          <div className="h-0.5 w-10 bg-indigo-600 rounded-full" />
           <span className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
             Featured Listings
           </span>
@@ -75,7 +75,7 @@ const Home = () => {
               {[1, 2, 3].map((n) => (
                 <div
                   key={n}
-                  className="h-[380px] bg-slate-100 animate-pulse rounded-2xl shadow-sm"
+                  className="h-95 bg-slate-100 animate-pulse rounded-2xl shadow-sm"
                 />
               ))}
             </div>
@@ -103,14 +103,14 @@ const Home = () => {
           viewport={{ once: true, margin: "-80px" }}
         >
           {/* Divider */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-20 bg-gradient-to-b from-transparent to-slate-200" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-20 bg-linear-to-b from-transparent to-slate-200" />
 
           <div className="pt-20">
             <Aboutsection />
           </div>
 
           {/* Background Glow */}
-          <div className="absolute -bottom-40 -left-32 w-[450px] h-[450px] bg-orange-50 rounded-full blur-[140px] opacity-40 -z-10" />
+          <div className="absolute -bottom-40 -left-32 w-112.5 h-112.5 bg-orange-50 rounded-full blur-[140px] opacity-40 -z-10" />
         </motion.section>
 
       </main>

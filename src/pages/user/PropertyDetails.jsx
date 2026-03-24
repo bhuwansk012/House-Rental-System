@@ -116,13 +116,7 @@ const PropertyDetails = () => {
           </div>
 
           <div className="hidden md:flex flex-col gap-4">
-            <div className="flex-1 bg-indigo-100 rounded-4xl flex flex-col items-center justify-center text-indigo-600 p-4 text-center">
-              <FiMaximize size={32} className="mb-2" />
-              <p className="text-xs font-black uppercase tracking-widest">
-                Expanded View Coming Soon
-              </p>
-            </div>
-
+           
             <div className="flex-1 bg-slate-900 rounded-4xl flex flex-col items-center justify-center text-white p-4 text-center">
               <p className="text-2xl font-black">Rs. {property.price}</p>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
