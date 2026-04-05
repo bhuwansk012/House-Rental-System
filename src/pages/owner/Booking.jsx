@@ -6,6 +6,7 @@ import {
 } from "../../service/bookService";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
+import {useNavigate} from 'react-router-dom'
 
 import {
   FiMapPin,
@@ -16,11 +17,13 @@ import {
   FiClock,
   FiActivity,
   FiArrowRight,
+  FiEye
 } from "react-icons/fi";
 
 const Booking = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate=useNavigate();
 
   const fetchBookings = async () => {
     try {
@@ -242,17 +245,26 @@ const Booking = () => {
                           >
                             <FiXCircle /> Reject
                           </button>
+                          <button onClick={()=>navigate(`/owner/booking/details/${booking.id}`)} className="flex-1 flex items-center justify-center gap-2 border border-rose-200 text-rose-500 hover:bg-rose-50 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition active:scale-95">
+                            <FiEye/> View
+                          </button>
                         </div>
                       ) : (
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-slate-400 font-semibold flex items-center gap-2 uppercase">
                             Processed <FiArrowRight />
                           </span>
+                           <button onClick={()=>navigate(`/owner/booking/details/${booking.id}`)} className="flex-1 flex items-center justify-center gap-2  bg-blue-500 text-white hover:bg-blue-500 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition active:scale-95">
+                            <FiEye/> View
+                          </button>
 
                           {booking.status === "REJECTED" && (
+                            <>
                             <button className="flex items-center gap-2 text-xs text-slate-400 hover:text-rose-500 font-bold uppercase transition">
                               <FiTrash2 /> Remove
                             </button>
+                           
+                            </>  
                           )}
                         </div>
                       )}

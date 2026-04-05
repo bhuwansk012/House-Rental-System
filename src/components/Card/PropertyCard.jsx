@@ -65,7 +65,7 @@ const PropertyCard = ({ item }) => {
         {/* Location */}
         <p className="flex items-center gap-1.5 text-slate-400 text-xs font-medium mt-2 mb-4">
           <FiMapPin className="text-indigo-500" />
-          {item.tole}, {item.municipality}
+          {item.tole}, {item.municipality} {item.district}
         </p>
 
         {/* Features */}

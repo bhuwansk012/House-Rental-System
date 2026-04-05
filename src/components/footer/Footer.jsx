@@ -75,42 +75,20 @@ const Footer = () => {
             <div className="flex items-start gap-3">
               <FiMapPin className="text-indigo-500 mt-1" />
               <p className="text-slate-300">
-                New Baneshwor <br /> Kathmandu, Nepal
+                Mahendranagar <br /> Kanchanpur, Nepal
               </p>
             </div>
 
             <div className="flex items-center gap-3">
               <FiMail className="text-indigo-500" />
-              <p className="text-slate-300">hello@renthouse.com</p>
+              <p className="text-slate-300">bhuwansarki432@gmail.com</p>
             </div>
 
             <div className="flex items-center gap-3">
               <FiPhone className="text-indigo-500" />
-              <p className="text-slate-300">+977 1 4567890</p>
+              <p className="text-slate-300">+977 9767670400</p>
             </div>
 
-          </div>
-        </div>
-
-        {/* --- NEWSLETTER (NEW) --- */}
-        <div>
-          <h3 className="text-white font-bold uppercase tracking-[0.25em] text-[11px] mb-6">
-            Stay Updated
-          </h3>
-
-          <p className="text-sm text-slate-400 mb-4">
-            Get latest properties and updates directly in your inbox.
-          </p>
-
-          <div className="flex items-center bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-            <input
-              type="email"
-              placeholder="Your email"
-              className="bg-transparent px-4 py-3 text-sm text-white outline-none w-full"
-            />
-            <button className="bg-indigo-600 px-4 py-3 text-white text-sm hover:bg-indigo-500 transition">
-              Subscribe
-            </button>
           </div>
         </div>
 

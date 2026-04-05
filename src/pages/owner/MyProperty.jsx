@@ -237,7 +237,7 @@ const MyProperty = () => {
 
                       <button
                         onClick={() =>
-                          navigate(`/property/details/${prop.id}`)
+                          navigate(`/owner/property/details/${prop.id}`)
                         }
                         className="p-3 rounded-xl bg-slate-900 text-white hover:bg-indigo-600 transition"
                       >

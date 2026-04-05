@@ -55,3 +55,24 @@ export const updateBookingReject = async (id) => {
     throw error;
   }
 };
+
+export const getBookingById = async (id) => {
+  try {
+    const response = await api.get(`/getBooking/${id}`);  
+    return response;
+  }
+  catch (error) {
+    console.error("Error fetching booking details:", error);
+    throw error;
+  } 
+};
+ export const bookingFree = async (id) => {
+  try {
+    const response = await api.get(`/bookingFree/${id}`);
+    return response;
+  }
+  catch (error) {
+    console.error("Error checking booking availability:", error);
+    throw error;
+  } 
+};

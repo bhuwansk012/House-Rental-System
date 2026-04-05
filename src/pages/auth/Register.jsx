@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FiEye,
   FiEyeOff,
@@ -14,10 +14,12 @@ import {
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { registerService } from "../../service/authService";
+import Modal from "../../modal/public/Modal";
+import EmailVerify from "../../modal/formmodal/EmailVerify";
 
 const Register = () => {
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const {
     register,
@@ -31,9 +33,9 @@ const Register = () => {
       const response = await registerService(data);
 
       if (response.status === 201) {
-        toast.success(response.data || "Registration Successful!");
+        toast.success(response.data || " Please verify your email.");
         reset();
-        navigate("/login");
+        setOpen(true);
       }
     } catch (error) {
       const errorMsg = error.response?.data || "Registration Failed!";
@@ -250,6 +252,9 @@ const Register = () => {
 
         </div>
       </motion.div>
+      <Modal isOpen={open} onClose={() => setOpen(false)}>
+        <EmailVerify />
+      </Modal>
     </div>
   );
 };

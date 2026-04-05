@@ -1,5 +1,5 @@
 import {REGISTER_END_POINT,LOGIN_END} from './url'
-import {forget_password,reset_password} from './url'
+import {forget_password,reset_password,verify_email_url} from './url'
 import axios from 'axios';
 
 //Register Service
@@ -30,5 +30,9 @@ export const forget = async (email) => {
 };
 export const reset=async(token, password)=>{
   const response=await axios.put(reset_password,{token,password});
+  return response;
+}
+export const verifyEmail=async(token)=>{
+  const response=await axios.put(`${verify_email_url}/${token}`);
   return response;
 }

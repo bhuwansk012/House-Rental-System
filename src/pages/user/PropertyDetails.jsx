@@ -22,10 +22,14 @@ const PropertyDetails = () => {
 
   const [property, setProperty] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const role = sessionStorage.getItem("role");
 
-  // ---------------- FETCH PROPERTY ----------------
+
+ const handleNavigate = () => {
+  const destination = `${property.tole}, ${property.municipality}, ${property.district}, Nepal`;
+  const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=driving`;
+  window.open(url, "_blank");
+};
   const fetchProperty = async () => {
     try {
       const response = await getPropertyById(id);
@@ -68,7 +72,7 @@ const PropertyDetails = () => {
       {/* HEADER */}
       <div className="bg-white border-b border-slate-100 sticky top-0 z-30 py-4 px-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          
+
           <button
             onClick={() => navigate(-1)}
             className="text-slate-500 font-bold flex items-center gap-2 hover:text-indigo-600 transition"
@@ -78,11 +82,10 @@ const PropertyDetails = () => {
           </button>
 
           <span
-            className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
-              property.bookingStatus === "AVAILABLE"
+            className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${property.bookingStatus === "AVAILABLE"
                 ? "bg-emerald-50 text-emerald-600"
                 : "bg-rose-50 text-rose-600"
-            }`}
+              }`}
           >
             {property.bookingStatus}
           </span>
@@ -105,7 +108,7 @@ const PropertyDetails = () => {
 
         {/* IMAGE SECTION */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12 h-75 md:h-125">
-          
+
           <div className="md:col-span-3 rounded-[2.5rem] overflow-hidden shadow-2xl group relative">
             <img
               src={property.imageUrl}
@@ -116,11 +119,10 @@ const PropertyDetails = () => {
           </div>
 
           <div className="hidden md:flex flex-col gap-4">
-           
-            <div className="flex-1 bg-slate-900 rounded-4xl flex flex-col items-center justify-center text-white p-4 text-center">
+            <div className="flex-1 bg-gray-400 rounded-4xl flex flex-col items-center justify-center text-green-900 p-4 text-center">
               <p className="text-2xl font-black">Rs. {property.price}</p>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                Monthly Rent
+              <p className="text-[10px]  text-green-900  font-bold uppercase tracking-widest">
+                /Monthly Rent
               </p>
             </div>
           </div>
@@ -185,11 +187,10 @@ const PropertyDetails = () => {
                 ].map((f, i) => (
                   <div
                     key={i}
-                    className={`flex items-center gap-3 p-4 rounded-2xl ${
-                      f.active
+                    className={`flex items-center gap-3 p-4 rounded-2xl ${f.active
                         ? "text-slate-700"
                         : "text-slate-300 line-through opacity-50"
-                    }`}
+                      }`}
                   >
                     <span className={f.active ? "text-indigo-500" : ""}>
                       {f.icon}
@@ -201,23 +202,41 @@ const PropertyDetails = () => {
             </section>
 
             {/* MAP */}
-            <section>
-              <h2 className="text-2xl font-black text-slate-800 mb-6">
-                Neighborhood
-              </h2>
+            {/* NEIGHBORHOOD MAP SECTION */}
+           <section>
+  <div className="flex justify-between items-center mb-6">
+    <h2 className="text-2xl font-black text-slate-800 flex items-center gap-2">
+      <FiMapPin className="text-indigo-600" />
+      Neighborhood
+    </h2>
 
-              <div className="rounded-[2.5rem] overflow-hidden border-4 border-white shadow-xl">
-                <iframe
-                  title="map"
-                  width="100%"
-                  height="400"
-                  loading="lazy"
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                    `${property.municipality}, ${property.district}, Nepal`
-                  )}&z=15&output=embed`}
-                />
-              </div>
-            </section>
+    <button
+      onClick={handleNavigate}
+      className="text-indigo-600 py-3 px-6 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-slate-900 transition flex items-center gap-2 shadow-lg active:scale-95"
+    >
+      <FiNavigation />
+       Navigation
+    </button>
+  </div>
+
+  <div className="rounded-[2.5rem] overflow-hidden border-4 border-white shadow-xl bg-slate-100">
+    <iframe
+      width="100%"
+      height="450"
+      style={{ border: 0 }}
+      loading="lazy"
+      title="Property Location"
+      /* This URL works without an API Key */
+      src={`https://maps.google.com/maps?q=${encodeURIComponent(
+        `${property.tole}, ${property.municipality}, ${property.district}, Nepal`
+      )}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+    />
+  </div>
+
+  <p className="mt-4 text-[11px] text-slate-400 font-bold flex items-center gap-2 italic">
+    <FiInfo /> Click "Start Navigation" to open full directions in Google Maps.
+  </p>
+</section>
           </div>
 
           {/* SIDEBAR */}

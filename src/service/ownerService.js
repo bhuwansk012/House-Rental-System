@@ -35,3 +35,7 @@ export const getDashboardStats = async () => {
   const response = await api.get("/owner/dashboard");
   return response.data;
 }
+export const getPropertyById = async (id) => {
+  const response = await api.get(`/owner/property/${id}`);
+  return response.data;
+};

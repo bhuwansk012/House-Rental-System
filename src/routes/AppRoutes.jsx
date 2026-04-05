@@ -15,6 +15,7 @@ import Notification from "../pages/owner/Notification";
 import Payment from "../pages/owner/Payment";
 import OwnerProfile from "../pages/owner/OwnerProfile";
 import Report from "../pages/owner/Report";
+import BookingDetails from "../pages/owner/BookingDetails";
 
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import Details from '../pages/admin/Details';
@@ -27,7 +28,7 @@ import BookingList from "../pages/admin/BookingList";
 import OwnerList from "../pages/admin/OwnerList";
 import PropertyDetails from "../pages/user/PropertyDetails";
 import AdminProfile from '../pages/admin/AdminProfile'
-
+import Detail from "../pages/owner/Detail";
 
 function AppRoutes() {
   return (
@@ -55,6 +56,8 @@ function AppRoutes() {
         <Route path="/owner/payments" element={<Payment />} />
         <Route path="/owner/profile" element={<OwnerProfile />} />
         <Route path="/owner/reports" element={<Report />} />
+       <Route path="/owner/property/details/:id" element={<Detail />} />
+       <Route path="/owner/booking/details/:id" element={<BookingDetails />} />
       </Route>
 
       {/* Admin Routes */}

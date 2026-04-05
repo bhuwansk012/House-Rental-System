@@ -5,7 +5,7 @@ import { addProperty } from "../../service/ownerService";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Webcam from "react-webcam";
-import { Camera, Upload, X, CheckCircle, Image as ImageIcon, Car, Armchair } from "lucide-react";
+import { Camera, Upload, X, ImageIcon, Car, Armchair } from "lucide-react";
 
 const AddProperty = () => {
   const navigate = useNavigate();
@@ -13,7 +13,8 @@ const AddProperty = () => {
   
   // States
   const [isUpdated, setIsUpdated] = useState(false);
-  const [propertyImage, setPropertyImage] = useState(null); // Single Photo State
+  // CHANGED: State is now an array for 3 photos
+  const [propertyImages, setPropertyImages] = useState([]); 
   const [citizenFront, setCitizenFront] = useState(null);
   const [citizenBack, setCitizenBack] = useState(null);
   const [passportPhoto, setPassportPhoto] = useState(null);
@@ -28,7 +29,6 @@ const AddProperty = () => {
     }
   });
 
-  // ---------------- FETCH USER STATUS ----------------
   const updateStatus = async () => {
     try {
       const response = await api.get("/owner/get/status");
@@ -44,7 +44,6 @@ const AddProperty = () => {
     updateStatus();
   }, []);
 
-  // ---------------- CAMERA LOGIC ----------------
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     fetch(imageSrc)
@@ -57,24 +56,40 @@ const AddProperty = () => {
       });
   }, [webcamRef]);
 
-  // ---------------- FILE HANDLERS ----------------
+  // ---------------- NEW MULTI-FILE HANDLER ----------------
   const handlePropertyPhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPropertyImage(file);
+    const files = Array.from(e.target.files);
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (propertyImages.length + files.length > 3) {
+      toast.error("You can only upload a maximum of 3 photos");
+      return;
     }
+
+    const validFiles = files.filter(file => {
+      if (file.size > maxSize) {
+        toast.error(`${file.name} is too heavy (max 5MB)`);
+        return false;
+      }
+      return true;
+    });
+
+    setPropertyImages(prev => [...prev, ...validFiles]);
+  };
+
+  const removeImage = (index) => {
+    setPropertyImages(prev => prev.filter((_, i) => i !== index));
   };
 
   // ---------------- SUBMIT ----------------
   const onSubmit = async (data) => {
-    // Validation for identity if not already verified
     if (!isUpdated && (!citizenFront || !citizenBack || !passportPhoto)) {
       toast.error("Please provide all identity documents");
       return;
     }
 
-    if (!propertyImage) {
-        toast.error("Please upload a property photo");
+    if (propertyImages.length === 0) {
+        toast.error("Please upload at least one property photo");
         return;
     }
 
@@ -82,17 +97,17 @@ const AddProperty = () => {
       setLoading(true);
       const formData = new FormData();
       
-      // 1. Append Text/Boolean Fields
       Object.keys(data).forEach(key => {
         if (data[key] !== undefined && data[key] !== null) {
           formData.append(key, data[key]);
         }
       });
 
-      // 2. Append SINGLE Property Image (Matches 'image' in Backend DTO)
-      formData.append("image", propertyImage);
+      // CHANGED: Append multiple images to the 'image' key (or 'images' depending on backend)
+      propertyImages.forEach((file) => {
+        formData.append("image", file);
+      });
 
-      // 3. Append Identity Files (Only if user isn't verified yet)
       if (!isUpdated) {
         formData.append("citizenFront", citizenFront);
         formData.append("citizenBack", citizenBack);
@@ -109,7 +124,6 @@ const AddProperty = () => {
     }
   };
 
-  // Styles
   const sectionStyle = "bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4";
   const inputStyle = "w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none bg-gray-50";
   const labelStyle = "block text-sm font-medium text-gray-700 mb-1 ml-1";
@@ -124,7 +138,6 @@ const AddProperty = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           
-          {/* 1. PROPERTY DETAILS */}
           <section className={sectionStyle}>
             <div className="flex items-center gap-2 mb-2">
               <div className="bg-indigo-600 w-2 h-6 rounded-full" />
@@ -179,7 +192,6 @@ const AddProperty = () => {
             </div>
           </section>
 
-          {/* 2. LOCATION */}
           <section className={sectionStyle}>
             <h3 className="text-lg font-bold text-gray-800 mb-4">Location</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -190,7 +202,6 @@ const AddProperty = () => {
             </div>
           </section>
 
-          {/* 3. IDENTITY VERIFICATION (Conditional) */}
           {!isUpdated && (
             <section className={sectionStyle}>
               <h3 className="text-lg font-bold text-gray-800 mb-4">Owner Verification</h3>
@@ -219,21 +230,44 @@ const AddProperty = () => {
             </section>
           )}
 
-          {/* 4. SINGLE PROPERTY PHOTO */}
+          {/* 4. MULTIPLE PROPERTY PHOTOS */}
           <section className={sectionStyle}>
-            <h3 className="text-lg font-bold text-gray-800 mb-4">Property Photo</h3>
-            {!propertyImage ? (
-              <label className="w-full h-40 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-all">
-                <input type="file" accept="image/*" className="hidden" onChange={handlePropertyPhotoChange} />
-                <ImageIcon className="text-gray-400 w-8 h-8 mb-2" />
-                <span className="text-sm font-bold text-gray-500 uppercase">Upload Main Photo</span>
-              </label>
-            ) : (
-              <div className="relative w-full max-w-sm mx-auto h-48">
-                <img src={URL.createObjectURL(propertyImage)} className="w-full h-full object-cover rounded-2xl border shadow-sm" alt="Property Preview" />
-                <button type="button" onClick={() => setPropertyImage(null)} className="absolute -top-2 -right-2 bg-white shadow-md rounded-full p-1 text-red-500"><X size={18} /></button>
-              </div>
-            )}
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Property Photos (Max 3)</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {propertyImages.map((img, index) => (
+                <div key={index} className="relative h-40">
+                  <img 
+                    src={URL.createObjectURL(img)} 
+                    className="w-full h-full object-cover rounded-2xl border shadow-sm" 
+                    alt={`Preview ${index}`} 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => removeImage(index)} 
+                    className="absolute -top-2 -right-2 bg-white shadow-md rounded-full p-1 text-red-500 hover:bg-red-50"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              ))}
+              
+              {propertyImages.length < 3 && (
+                <label className="h-40 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-all">
+                  <input 
+                    type="file" 
+                    multiple 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={handlePropertyPhotoChange} 
+                  />
+                  <ImageIcon className="text-gray-400 w-8 h-8 mb-2" />
+                  <span className="text-xs font-bold text-gray-500 uppercase">
+                    {propertyImages.length === 0 ? "Upload Photos" : "Add More"}
+                  </span>
+                </label>
+              )}
+            </div>
+            <p className="text-xs text-gray-400 mt-2">* Each image must be under 5MB.</p>
           </section>
 
           {/* CAMERA MODAL */}
