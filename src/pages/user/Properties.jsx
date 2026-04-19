@@ -48,7 +48,7 @@ const Properties = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState("");
-  const [basedOn, setBasedOn] = useState("");
+  const [basedOn, setBasedOn] = useState("price");
 
   const clearFilters = () => {
     setSearch("");
@@ -81,9 +81,10 @@ const Properties = () => {
       setData(
         properties.map((item) => ({
           ...item,
-          imageUrl: `http://localhost:8080/uploads/properties/${item.imageUrl}`,
+          imageUrl: `http://localhost:8080/uploads/properties/${item.images[1]}`,
         }))
       );
+      console.log("Fetched properties:", response.data);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {

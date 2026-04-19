@@ -19,7 +19,6 @@ const OwnerSidebar = ({ isOpen }) => {
     { to: "/owner/dashboard", icon: <FiGrid />, label: "Overview" },
     { to: "/owner/my-property", icon: <FiHome />, label: "My Assets" },
     { to: "/owner/bookings", icon: <FiCalendar />, label: "Reservations" },
-    { to: "/owner/notifications", icon: <FiBell />, label: "Alerts" },
     { to: "/owner/payments", icon: <FiCreditCard />, label: "Payouts" },
     { to: "/owner/reports", icon: <FiBarChart2 />, label: "Insights" },
     { to: "/owner/profile", icon: <FiUser />, label: "Settings" },

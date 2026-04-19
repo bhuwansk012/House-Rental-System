@@ -76,3 +76,14 @@ export const getBookingById = async (id) => {
     throw error;
   } 
 };
+
+export const bookingReleased=async(id)=>{
+  try{
+    const response= await api.delete(`booking-released/${id}`)
+    return response;
+  }
+  catch (error)
+  {
+    throw error;
+  }
+}

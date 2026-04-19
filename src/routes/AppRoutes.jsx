@@ -8,6 +8,11 @@ import Home from "../pages/user/Home";
 import Properties from "../pages/user/Properties";
 import About from "../pages/user/About";
 
+import MapRoutePage from "../pages/maproute/MapRoutePage"
+import EsewaPayment from "../pages/payment/EsewaPayment";
+import Success from "../pages/payment/Success";
+import Failure from "../pages/payment/Failure";
+
 import OwnerDashboard from "../pages/owner/OwnerDashboard";
 import MyProperty from "../pages/owner/MyProperty";
 import Booking from "../pages/owner/Booking";
@@ -33,9 +38,12 @@ import Detail from "../pages/owner/Detail";
 function AppRoutes() {
   return (
     <Routes>
-     
+      <Route path="/map-route/:id" element={<MapRoutePage />} />
       <Route path="/forget-password" element={<Forget/>}/>
       <Route path="/password/reset/:token" element={<Reset />} />
+      <Route path="/payment/esewa" element={<EsewaPayment />} />
+      <Route path="/success" element={<Success />} />
+      <Route path="/failure" element={<Failure />} />
       {/* User Routes */}
       <Route element={<UserLayout />}>
         <Route path="/" element={<Home />} />

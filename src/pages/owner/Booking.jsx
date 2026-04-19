@@ -6,7 +6,7 @@ import {
 } from "../../service/bookService";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 import {
   FiMapPin,
@@ -17,19 +17,24 @@ import {
   FiClock,
   FiActivity,
   FiArrowRight,
-  FiEye
+  FiEye,
+  FiLayers
 } from "react-icons/fi";
 
 const Booking = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate=useNavigate();
+  const [accepting, setAccepting] = useState(false);
+  const [rejecting, setRejecting] = useState(false);
+  const navigate = useNavigate();
 
   const fetchBookings = async () => {
     try {
       setLoading(true);
       const response = await getAllOwnerBookings();
-      setBookings([...response.data].reverse());
+      // Ensure we are working with an array
+      const data = Array.isArray(response.data) ? response.data : [];
+      setBookings([...data].reverse());
     } catch (error) {
       toast.error("Failed to load bookings");
     } finally {
@@ -43,6 +48,7 @@ const Booking = () => {
 
   const handleAccept = async (id) => {
     try {
+      setAccepting(true);
       await updateBookingAccept(id);
       toast.success("Booking approved");
       fetchBookings();
@@ -53,6 +59,7 @@ const Booking = () => {
 
   const handleReject = async (id) => {
     try {
+      setRejecting(true);
       await updateBookingReject(id);
       toast.success("Booking declined");
       fetchBookings();
@@ -88,38 +95,30 @@ const Booking = () => {
     return (
       <div className="text-center mt-32">
         <FiClock size={48} className="mx-auto text-slate-200 mb-4" />
-        <h3 className="text-xl font-bold text-slate-800">
-          No Booking Requests
-        </h3>
-        <p className="text-slate-500">
-          New requests will appear here as they come in.
-        </p>
+        <h3 className="text-xl font-bold text-slate-800">No Booking Requests</h3>
+        <p className="text-slate-500">New requests will appear here as they come in.</p>
       </div>
     );
 
   return (
     <div className="max-w-6xl mx-auto py-10 px-6 font-sans">
-
       {/* HEADER */}
       <div className="mb-10">
         <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800">
           Booking <span className="text-indigo-600">Management</span>
         </h1>
-        <p className="text-slate-500 mt-1 font-medium">
-          Review and manage tenant requests
-        </p>
+        <p className="text-slate-500 mt-1 font-medium">Review and manage tenant requests</p>
       </div>
 
       <div className="grid gap-8">
         <AnimatePresence>
           {bookings.map((booking, index) => {
-            const propertyImages = booking.property.images?.length
-              ? [...booking.property.images].reverse()
-              : booking.property.imageUrl
-              ? [
-                  `http://localhost:8080/uploads/properties/${booking.property.imageUrl}`,
-                ]
-              : [];
+            // --- IMAGE ARRAY HANDLING ---
+            const propertyImages = booking.property?.images?.length
+              ? booking.property.images.map(img => `http://localhost:8080/uploads/properties/${img}`)
+              : booking.property?.imageUrl
+              ? [`http://localhost:8080/uploads/properties/${booking.property.imageUrl}`]
+              : ["https://via.placeholder.com/400x300?text=No+Image"];
 
             return (
               <motion.div
@@ -130,97 +129,77 @@ const Booking = () => {
                 className="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
               >
                 <div className="flex flex-col lg:flex-row">
-
-                  {/* IMAGE */}
-                  <div className="lg:w-80 relative">
+                  {/* IMAGE SECTION */}
+                  <div className="lg:w-80 relative group">
                     <img
                       src={propertyImages[0]}
-                      alt={booking.property.title}
-                      className="w-full h-72 object-cover"
+                      alt={booking.property?.title}
+                      className="w-full h-72 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-
+                    
+                    {/* Status Badge */}
                     <div className="absolute top-4 left-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${getStatusStyles(
-                          booking.status
-                        )}`}
-                      >
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border backdrop-blur-md ${getStatusStyles(booking.status)}`}>
                         {booking.status}
                       </span>
                     </div>
+
+                    {/* Image Count Badge */}
+                    {propertyImages.length > 1 && (
+                      <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white px-2 py-1 rounded-lg text-[10px] flex items-center gap-1 font-bold">
+                        <FiLayers /> {propertyImages.length} Photos
+                      </div>
+                    )}
                   </div>
 
-                  {/* CONTENT */}
-                  <div className="flex-1 p-6 flex flex-col justify-between">
-
-                    {/* TOP */}
+                  {/* CONTENT SECTION */}
+                  <div className="flex-1 p-8 flex flex-col justify-between">
                     <div>
                       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
                         <div>
                           <div className="flex items-center gap-2 text-indigo-500 text-xs font-bold uppercase mb-1">
-                            <FiActivity /> Ref #{booking.id}
+                            <FiActivity /> Ref #{booking.id.toString().slice(-6).toUpperCase()}
                           </div>
-
-                          <h2 className="text-xl md:text-2xl font-bold text-slate-800">
-                            {booking.property.title}
-                          </h2>
-
-                          <p className="flex items-center gap-2 text-slate-500 mt-1 text-sm">
-                            <FiMapPin />
-                            {booking.property.municipality},{" "}
-                            {booking.property.district}
+                          <h2 className="text-2xl font-black text-slate-800">{booking.property?.title}</h2>
+                          <p className="flex items-center gap-2 text-slate-500 mt-1 text-sm font-medium">
+                            <FiMapPin className="text-indigo-400" />
+                            {booking.property?.municipality}, {booking.property?.district}
                           </p>
                         </div>
-
-                        <div className="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold">
-                          Rs. {booking.property.price.toLocaleString()}
+                        <div className="bg-slate-900 text-white px-6 py-2 rounded-2xl font-black shadow-lg shadow-slate-200">
+                          Rs. {booking.property?.price?.toLocaleString()}
                         </div>
                       </div>
 
-                      {/* DETAILS */}
-                      <div className="grid md:grid-cols-2 gap-6 mb-6">
-
-                        {/* PROPERTY */}
-                        <div>
-                          <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-3">
-                            Property Details
-                          </p>
-
-                          <div className="flex gap-3 mb-3">
-                            <span className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg text-sm font-semibold text-slate-600">
-                              <FiBox /> {booking.property.bedrooms} Beds
+                      <div className="grid md:grid-cols-2 gap-8 mb-8">
+                        {/* Property Specs */}
+                        <div className="space-y-4">
+                          <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-black">Property Details</p>
+                          <div className="flex gap-3">
+                            <span className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-600 border border-slate-100">
+                              <FiBox /> {booking.property?.bedrooms} Beds
                             </span>
-
-                            <span className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg text-sm font-semibold text-slate-600">
-                              <FiActivity /> {booking.property.bathrooms} Baths
+                            <span className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-600 border border-slate-100">
+                              <FiActivity /> {booking.property?.bathrooms} Baths
                             </span>
                           </div>
-
-                          <p className="text-sm text-slate-500 italic line-clamp-2">
-                            {booking.property.description}
+                          <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">
+                            {booking.property?.description}
                           </p>
                         </div>
 
-                        {/* TENANT */}
-                        <div className="bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
-                          <p className="text-[10px] uppercase tracking-widest text-indigo-500 font-bold mb-3">
-                            Tenant
-                          </p>
-
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold">
-                              {booking.tenant.fullName.charAt(0)}
+                        {/* Tenant Info */}
+                        <div className="bg-indigo-50/50 p-5 rounded-4xl border border-indigo-100/50">
+                          <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-500 font-black mb-4">Requester Info</p>
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center font-black shadow-indigo-200 shadow-lg">
+                              {booking.tenant?.fullName?.charAt(0)}
                             </div>
-
                             <div>
-                              <p className="font-semibold text-slate-800">
-                                {booking.tenant.fullName}
-                              </p>
-                              <p className="text-xs text-slate-500">
-                                {booking.tenant.email}
-                              </p>
-                              <p className="text-xs text-slate-500">
-                                {booking.phone},{booking.address}
+                              <p className="font-bold text-slate-800">{booking.tenant?.fullName}</p>
+                              <p className="text-xs text-slate-500 font-medium">{booking.tenant?.email}</p>
+                              <p className="text-[10px] text-indigo-600 font-bold mt-1 bg-indigo-100 w-fit px-2 py-0.5 rounded-md">
+                                {booking.phone}
                               </p>
                             </div>
                           </div>
@@ -228,48 +207,50 @@ const Booking = () => {
                       </div>
                     </div>
 
-                    {/* ACTIONS */}
-                    <div className="border-t border-slate-100 pt-5">
+                    {/* ACTION BUTTONS */}
+                    <div className="border-t border-slate-100 pt-6">
                       {booking.status === "PENDING" ? (
-                        <div className="flex gap-3">
+                        <div className="flex flex-wrap gap-3">
                           <button
                             onClick={() => handleAccept(booking.id)}
-                            className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition active:scale-95"
+                            className="flex-1 min-w-35 flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-emerald-100"
                           >
-                            <FiCheckCircle /> Approve
+                            <FiCheckCircle size={16} />{accepting ? "Approving..." : " Approve"}
                           </button>
-
                           <button
                             onClick={() => handleReject(booking.id)}
-                            className="flex-1 flex items-center justify-center gap-2 border border-rose-200 text-rose-500 hover:bg-rose-50 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition active:scale-95"
+                            className="flex-1 min-w-35 flex items-center justify-center gap-2 border-2 border-rose-100 text-rose-500 hover:bg-rose-50 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95"
                           >
-                            <FiXCircle /> Reject
+                            <FiXCircle size={16} />{rejecting ? "Rejecting..." : " Reject"}
                           </button>
-                          <button onClick={()=>navigate(`/owner/booking/details/${booking.id}`)} className="flex-1 flex items-center justify-center gap-2 border border-rose-200 text-rose-500 hover:bg-rose-50 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition active:scale-95">
-                            <FiEye/> View
+                          <button 
+                            onClick={() => navigate(`/owner/booking/details/${booking.id}`)}
+                            className="flex-1 min-w-35 flex items-center justify-center gap-2 bg-slate-50 text-slate-600 hover:bg-slate-100 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
+                          >
+                            <FiEye size={16} /> Details
                           </button>
                         </div>
                       ) : (
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-slate-400 font-semibold flex items-center gap-2 uppercase">
-                            Processed <FiArrowRight />
-                          </span>
-                           <button onClick={()=>navigate(`/owner/booking/details/${booking.id}`)} className="flex-1 flex items-center justify-center gap-2  bg-blue-500 text-white hover:bg-blue-500 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition active:scale-95">
-                            <FiEye/> View
-                          </button>
-
-                          {booking.status === "REJECTED" && (
-                            <>
-                            <button className="flex items-center gap-2 text-xs text-slate-400 hover:text-rose-500 font-bold uppercase transition">
-                              <FiTrash2 /> Remove
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                            Processed <FiArrowRight /> {booking.status}
+                          </div>
+                          <div className="flex gap-3">
+                            <button 
+                              onClick={() => navigate(`/owner/booking/details/${booking.id}`)}
+                              className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
+                            >
+                              <FiEye /> View Details
                             </button>
-                           
-                            </>  
-                          )}
+                            {booking.status === "REJECTED" && (
+                              <button className="p-3 text-slate-300 hover:text-rose-500 transition-colors">
+                                <FiTrash2 size={20} />
+                              </button>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>
-
                   </div>
                 </div>
               </motion.div>

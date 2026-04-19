@@ -93,15 +93,7 @@ const Hero = () => {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -top-6 -right-6 z-20 bg-white p-6 rounded-[2rem] shadow-2xl border border-slate-50 hidden md:block"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600">
-                <FiHome size={24} />
-              </div>
-              <div>
-                <p className="text-sm font-black text-slate-800">New Apartment</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Just Listed</p>
-              </div>
-            </div>
+           
           </motion.div>
 
           <motion.div 
@@ -109,12 +101,6 @@ const Hero = () => {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
             className="absolute -bottom-10 -left-10 z-20 bg-white p-6 rounded-[2rem] shadow-2xl border border-slate-50 hidden md:block"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
-                <FiCheckCircle size={20} />
-              </div>
-              <p className="text-xs font-black text-slate-800 uppercase tracking-widest">Owner Verified</p>
-            </div>
           </motion.div>
 
           {/* Background Shape */}

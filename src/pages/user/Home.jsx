@@ -6,6 +6,7 @@ import Aboutsection from "../../components/section/Aboutsection";
 import { getAllProperties } from "../../service/publicService";
 import Propertydash from "../../components/AfterLogged/Propertydash";
 import Hero1 from "../../components/AfterLogged/Hero1";
+import {Link} from 'react-router-dom'
 
 const Home = () => {
   const role = sessionStorage.getItem("role");
@@ -21,7 +22,7 @@ const Home = () => {
 
       const updated = response.data.map((item) => ({
         ...item,
-        imageUrl: `http://localhost:8080/uploads/properties/${item.imageUrl}`,
+        imageUrl: `http://localhost:8080/uploads/properties/${item.imageUrl[0]}`,
       }));
 
       setData(updated);
@@ -126,6 +127,8 @@ const Home = () => {
           </div>
         </div>
       )}
+      <div className="bg-green-500 text-white font-bold">esewa payment with text crediantails</div>
+      <Link to='/payment/esewa' className="rounded-2xl px-3 py-2" >Payment</Link>
     </div>
   );
 };

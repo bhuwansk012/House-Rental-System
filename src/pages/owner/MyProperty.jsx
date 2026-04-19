@@ -13,7 +13,6 @@ import {
   FiExternalLink,
   FiMapPin,
   FiBox,
-  FiActivity,
 } from "react-icons/fi";
 import Modal from "../../modal/public/Modal";
 import AddProperty from "../../modal/formmodal/AddProperty";
@@ -31,22 +30,25 @@ const MyProperty = () => {
         setLoading(true);
         const data = await getOwnerProperty();
 
-        const formatted = [...data]
+        console.log("Fetched properties:", data);
+
+        // ✅ FIXED: map images per property
+        const formatted = data
+          .slice()
           .reverse()
           .map((p) => ({
             ...p,
-            images: p.imageUrl
-              ? [...p.imageUrl.split(",")]
-                  .reverse()
-                  .map(
-                    (img) =>
-                      `http://localhost:8080/uploads/properties/${img}`
-                  )
+            images: Array.isArray(p.images)
+              ? p.images.map(
+                  (img) =>
+                    `http://localhost:8080/uploads/properties/${img}`
+                )
               : [],
           }));
 
         setProperties(formatted);
-      } catch {
+      } catch (err) {
+        console.error(err);
         toast.error("Failed to load inventory");
       } finally {
         setLoading(false);
@@ -75,15 +77,14 @@ const MyProperty = () => {
   };
 
   const handleEdit = (id) => {
-    // Navigate to edit page (adjust route as per your app)
     navigate(`/owner/property/edit/${id}`);
   };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] font-sans pb-20">
-
+      
       {/* HERO */}
-      <div className="relative h-[380px] bg-slate-900 overflow-hidden">
+      <div className="relative h-95 bg-slate-900 overflow-hidden">
         {properties[0]?.images?.[0] && (
           <motion.img
             initial={{ scale: 1.1 }}
@@ -148,6 +149,7 @@ const MyProperty = () => {
                   transition={{ delay: index * 0.05 }}
                   className="bg-white rounded-3xl border border-slate-100 shadow-lg hover:shadow-xl transition overflow-hidden group"
                 >
+                  
                   {/* IMAGE */}
                   <div className="h-64 overflow-hidden relative">
                     <img
@@ -156,9 +158,14 @@ const MyProperty = () => {
                         "https://via.placeholder.com/400x300"
                       }
                       alt={prop.title}
+                      onError={(e) =>
+                        (e.target.src =
+                          "https://via.placeholder.com/400x300")
+                      }
                       className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                     />
 
+                    {/* STATUS */}
                     <div className="absolute top-4 left-4">
                       <span
                         className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
@@ -171,6 +178,7 @@ const MyProperty = () => {
                       </span>
                     </div>
 
+                    {/* PRICE */}
                     <div className="absolute bottom-4 right-4 bg-slate-900 text-white px-4 py-2 rounded-xl font-bold text-sm">
                       Rs. {prop.price}
                     </div>
@@ -178,7 +186,6 @@ const MyProperty = () => {
 
                   {/* CONTENT */}
                   <div className="p-6">
-
                     <h3 className="text-lg font-bold text-slate-800">
                       {prop.title}
                     </h3>
@@ -251,7 +258,7 @@ const MyProperty = () => {
           </div>
         )}
 
-        {/* EMPTY STATE */}
+        {/* EMPTY */}
         {!loading && properties.length === 0 && (
           <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
             <FiBox size={40} className="mx-auto text-slate-300 mb-4" />

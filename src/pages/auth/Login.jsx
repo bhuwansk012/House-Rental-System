@@ -22,17 +22,23 @@ const Login = () => {
       const response = await loginService(data);
 
       if (response.status === 200) {
-        toast.success(response.data.message);
-
         sessionStorage.setItem("email", response.data.email);
         sessionStorage.setItem("isAuthenticated", true);
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("role", response.data.role);
         sessionStorage.setItem("name", response.data.fullName);
 
-        if (response.data.role === "ADMIN") navigate("/admin/dashboard");
-        else if (response.data.role === "OWNER") navigate("/owner/dashboard");
-        else navigate("/");
+        if (response.data.role === "ADMIN") {
+          navigate("/admin/dashboard");
+          toast.success(response.data.message);
+        } else if (response.data.role === "OWNER") {
+          navigate("/owner/dashboard");
+          toast.success(response.data.message);
+        } else {
+          window.location.reload(navigate("/")); // Force reload to update UI based on new auth state
+          // toast.success(response.data.message);
+        }
+
       }
     } catch (error) {
       const status = error.response?.status;

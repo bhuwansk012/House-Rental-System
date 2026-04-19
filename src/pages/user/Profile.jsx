@@ -15,8 +15,8 @@ const Profile = () => {
 
   const handleLogout = () => {
     logout();
-    toast.success("Logged out successfully!");
-    navigate("/");
+    window.location.reload(navigate("/")); // Force reload to update UI based on new auth state
+    toast.success("You have logged out successfully!");
   };
 
   // Guard UI
@@ -47,7 +47,7 @@ const Profile = () => {
         className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.08)] border border-slate-100 overflow-hidden"
       >
         {/* BANNER */}
-        <div className="h-40 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative">
+        <div className="h-40 bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 relative">
           <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0">
             <div className="w-32 h-32 bg-white rounded-[2.2rem] p-1.5 shadow-xl">
               <div className="w-full h-full bg-slate-50 rounded-[1.8rem] flex items-center justify-center text-indigo-400">

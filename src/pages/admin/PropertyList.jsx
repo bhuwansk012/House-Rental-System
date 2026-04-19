@@ -40,10 +40,11 @@ const PropertyList = () => {
     try {
       const response = await getAdminProperties();
       // Logic to handle different image path structures
+      console.log("Fetched properties:", response);
       const formatted = response.map((p) => ({
         ...p,
-        displayImage: p.imageUrl && p.imageUrl.length > 0
-          ?  `http://localhost:8080/uploads/properties/${p.imageUrl}`
+        displayImage: p.images && p.images.length > 0
+          ?  `http://localhost:8080/uploads/properties/${p.images[0]}`
             : "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=300&auto=format&fit=crop",
       }));
       setProperties(formatted);
@@ -94,21 +95,6 @@ const PropertyList = () => {
             <p className="text-slate-500 mt-2 font-medium">
               Review, approve, or reject new property listings.
             </p>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search properties..." 
-                className="pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none w-64 bg-white shadow-sm transition-all"
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition shadow-sm">
-              <FiFilter size={20} />
-            </button>
           </div>
         </header>
 

@@ -2,6 +2,7 @@ import api from "./api";
 
 const property_add_url = "/owner/add";
 const get_property_by_owner = "/owner/my-properties";
+const get_owner_document="/owner/document";
 
 //aading propety
 export const addProperty = async (formData) => {
@@ -39,3 +40,8 @@ export const getPropertyById = async (id) => {
   const response = await api.get(`/owner/property/${id}`);
   return response.data;
 };
+
+export const getOwnerDocument=async()=>{
+  const response=await api.get(get_owner_document);
+  return response;
+}
