@@ -95,6 +95,9 @@ const Home = () => {
             </div>
           )}
         </motion.div>
+        <Link to="/payment/esewa" className="mt-8 inline-flex items-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-all duration-300 shadow-lg shadow-indigo-100">
+          <span>Try eSewa Payment</span>
+        </Link>
 
         {/* ABOUT SECTION */}
         <motion.section
@@ -127,8 +130,6 @@ const Home = () => {
           </div>
         </div>
       )}
-      <div className="bg-green-500 text-white font-bold">esewa payment with text crediantails</div>
-      <Link to='/payment/esewa' className="rounded-2xl px-3 py-2" >Payment</Link>
     </div>
   );
 };

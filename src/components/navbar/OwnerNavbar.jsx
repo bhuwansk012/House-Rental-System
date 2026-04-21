@@ -7,6 +7,7 @@ const OwnerNavbar = ({ isOpen, toggleSidebar }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
+
   const name = sessionStorage.getItem("name") || "Owner";
   const email = sessionStorage.getItem("email") || "admin@dashboard.com";
 

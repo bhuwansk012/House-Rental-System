@@ -12,7 +12,13 @@ const BookingList = () => {
     try {
       const response = await getAllBookings();
       if (response.status === 200 && response.data) {
-        setBookings([...response.data].reverse());
+        const formatedData= response.data.map((booking) => ({
+          ...booking,
+          imageUrl: booking.property?.images?.length > 0
+            ? `http://localhost:8080/uploads/properties/${booking.property.images[0]}`
+            : null,
+        }));
+        setBookings(formatedData.reverse()); // Reverse to show latest firs
       } else {
         toast.error("Failed to fetch bookings");
       }
@@ -138,7 +144,7 @@ const BookingList = () => {
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-4">
                             <img
-                              src={`http://localhost:8080/uploads/properties/${booking.property.imageUrl}`}
+                              src={booking.imageUrl}
                               alt=""
                               className="w-14 h-14 object-cover rounded-xl shadow-sm"
                             />
@@ -164,7 +170,7 @@ const BookingList = () => {
                         </td>
 
                         {/* LOCATION */}
-                        <td className="px-6 py-5 max-w-[200px]">
+                        <td className="px-6 py-5 max-w-50">
                           <div className="flex items-start gap-2 text-slate-600">
                             <FiMapPin className="mt-1 text-indigo-400 shrink-0" />
                             <span className="text-sm font-medium line-clamp-2">
@@ -180,7 +186,7 @@ const BookingList = () => {
                               <span className="w-5 h-5 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 font-bold text-[10px]">
                                 O
                               </span>
-                              <span className="font-semibold truncate max-w-[100px]">
+                              <span className="font-semibold truncate max-w-25">
                                 {booking.property.owner.fullName}
                               </span>
                             </div>
@@ -189,7 +195,7 @@ const BookingList = () => {
                               <span className="w-5 h-5 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 font-bold text-[10px]">
                                 T
                               </span>
-                              <span className="font-semibold truncate max-w-[100px]">
+                              <span className="font-semibold truncate max-w-25">
                                 {booking.tenant.fullName}
                               </span>
                             </div>

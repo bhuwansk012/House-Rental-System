@@ -38,13 +38,15 @@ const OwnerDashboard = () => {
       const response = await getAllOwnerBookings();
 
       const updated = response.data.map((booking) => ({
-        ...booking,
-        imageUrl: booking.property?.imageUrl
-          ? `http://localhost:8080/uploads/properties/${booking.property.imageUrl}`
-          : null,
-      }));
+  ...booking,
+  imageUrl: booking.property?.images?.length > 0
+    ? `http://localhost:8080/uploads/properties/${booking.property.images[0]}`
+    : null,
+}));
+
 
       setRecentBookings(updated || []);
+      console.log("Recent Bookings:", updated);
     } catch (error) {
       console.error(error);
     } finally {
@@ -127,7 +129,7 @@ const OwnerDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className={`p-6 rounded-2xl bg-gradient-to-br ${item.gradient} text-white shadow-lg`}
+            className={`p-6 rounded-2xl bg-linear-to-br ${item.gradient} text-white shadow-lg`}
           >
             <div className="flex justify-between items-start">
               <div>

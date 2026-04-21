@@ -7,26 +7,27 @@ import Register from '../pages/auth/Register'
 import Home from "../pages/user/Home";
 import Properties from "../pages/user/Properties";
 import About from "../pages/user/About";
+import Contact from "../pages/user/Contact";
 
 import MapRoutePage from "../pages/maproute/MapRoutePage"
 import EsewaPayment from "../pages/payment/EsewaPayment";
 import Success from "../pages/payment/Success";
 import Failure from "../pages/payment/Failure";
+import Notification from "../pages/auth/Notification";
 
 import OwnerDashboard from "../pages/owner/OwnerDashboard";
 import MyProperty from "../pages/owner/MyProperty";
 import Booking from "../pages/owner/Booking";
-import Notification from "../pages/owner/Notification";
 import Payment from "../pages/owner/Payment";
 import OwnerProfile from "../pages/owner/OwnerProfile";
 import Report from "../pages/owner/Report";
 import BookingDetails from "../pages/owner/BookingDetails";
-
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import Details from '../pages/admin/Details';
 import UserLayout from "../layouts/UserLayout";
 import OwnerLayout from "../layouts/OwnerLayout";
 import AdminLayout from "../layouts/AdminLayout";
+
 import UserList from "../pages/admin/UserList";
 import PropertyList from "../pages/admin/PropertyList";
 import BookingList from "../pages/admin/BookingList";
@@ -46,6 +47,7 @@ function AppRoutes() {
       <Route path="/failure" element={<Failure />} />
       {/* User Routes */}
       <Route element={<UserLayout />}>
+         <Route path="user/notification" element={<Notification />} />
         <Route path="/" element={<Home />} />
         <Route path="/properties" element={<Properties />} />
         <Route path="/about" element={<About />} />
@@ -53,14 +55,15 @@ function AppRoutes() {
         <Route path="/register" element={<Register/>}/>
         <Route path="/property-details/:id" element={<PropertyDetails/>}/>
         <Route path='/profile' element={<Profile/>}/>
+        <Route path="/contact" element={<Contact />} />
       </Route>
 
       {/* Owner Routes */}
       <Route element={<OwnerLayout />}>
+        <Route path="/owner/notification" element={<Notification />} />
         <Route path="/owner/dashboard" element={<OwnerDashboard />} />
         <Route path="/owner/my-property" element={<MyProperty />} />
         <Route path="/owner/bookings" element={<Booking />} />
-        <Route path="/owner/notifications" element={<Notification />} />
         <Route path="/owner/payments" element={<Payment />} />
         <Route path="/owner/profile" element={<OwnerProfile />} />
         <Route path="/owner/reports" element={<Report />} />
@@ -70,6 +73,7 @@ function AppRoutes() {
 
       {/* Admin Routes */}
       <Route element={<AdminLayout />}>
+        <Route path="/admin/notifications" element={<Notification />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/users" element={<UserList />} />
         <Route path="/admin/properties" element={<PropertyList />} />

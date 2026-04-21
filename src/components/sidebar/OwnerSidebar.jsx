@@ -1,6 +1,7 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { getUnreadCount } from "../../service/notificationService";
 import {
   FiGrid,
   FiHome,
@@ -13,6 +14,31 @@ import {
 } from "react-icons/fi";
 
 const OwnerSidebar = ({ isOpen }) => {
+
+  const [unreadCount, setUnreadCount] = React.useState(0);
+  const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+  
+    const fetchUnreadCount = async () => {
+      if (!isAuthenticated) return; // Skip fetching if not authenticated
+      try {
+        const res = await getUnreadCount();
+        setUnreadCount(res.data || 0);
+      } catch (err) {
+        console.error("Error fetching unread count", err);
+      }
+    };
+   
+    useEffect(() => {
+      // initial fetch
+      fetchUnreadCount();
+  
+      // polling every 5 seconds
+      const timer = setInterval(() => {
+        fetchUnreadCount();
+      }, 5000);
+  
+      return () => clearInterval(timer);
+    }, []);
   const name = sessionStorage.getItem("name") || "Owner";
 
   const menuItems = [
@@ -21,6 +47,7 @@ const OwnerSidebar = ({ isOpen }) => {
     { to: "/owner/bookings", icon: <FiCalendar />, label: "Reservations" },
     { to: "/owner/payments", icon: <FiCreditCard />, label: "Payouts" },
     { to: "/owner/reports", icon: <FiBarChart2 />, label: "Insights" },
+    { to: "/owner/notification", icon: <FiBell />, label: "Notifications", value: `${unreadCount}`  },
     { to: "/owner/profile", icon: <FiUser />, label: "Settings" },
   ];
 
@@ -80,6 +107,11 @@ const OwnerSidebar = ({ isOpen }) => {
                   exit={{ opacity: 0, x: -8 }}
                   className="ml-3 text-sm font-medium whitespace-nowrap"
                 >
+                  <span>{item.value > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {item.value}
+                    </span>
+                  )}</span>
                   {item.label}
                 </motion.span>
               )}

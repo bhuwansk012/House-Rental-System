@@ -1,16 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
-import { FaAddressBook, FaUsers, FaUser } from "react-icons/fa";
+import { FaAddressBook, FaUsers, FaUser, FaBell } from "react-icons/fa";
 import { BsHousesFill } from "react-icons/bs";
 import { GrUserAdmin } from "react-icons/gr";
 import { IoLogOut, IoShieldCheckmark } from "react-icons/io5";
 import { logout } from "../../service/authService";
 import { toast } from "react-toastify";
+import { getUnreadCount } from "../../service/notificationService";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
+  const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+
+  // Fetch unread notifications
+  const fetchUnreadCount = async () => {
+    if (!isAuthenticated) return; // Skip fetching if not authenticated
+    try {
+      const res = await getUnreadCount();
+      const count = Number(res?.data) || 0;
+      setUnreadCount(count);
+      console.log("Unread count:", count);
+    } catch (err) {
+      console.error("Error fetching unread count", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchUnreadCount();
+
+    const interval = setInterval(fetchUnreadCount, 5000); // poll every 5s
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -19,7 +42,7 @@ const AdminSidebar = () => {
   };
 
   const linkclass = ({ isActive }) =>
-    `flex items-center gap-3 px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200
+    `flex items-center gap-3 px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 relative
     ${
       isActive
         ? "bg-indigo-600 text-white shadow-sm"
@@ -69,6 +92,18 @@ const AdminSidebar = () => {
           Bookings
         </NavLink>
 
+        {/* Notifications with badge */}
+        <NavLink to="/admin/notifications" className={linkclass}>
+          <FaBell size={18} />
+          Notifications
+
+          {unreadCount > 0 && (
+            <span className="absolute right-4 top-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 min-w-5 px-1 flex items-center justify-center animate-pulse">
+              {unreadCount}
+            </span>
+          )}
+        </NavLink>
+
         {/* Access Control */}
         <p className="px-3 pt-6 pb-1 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
           Access Control
@@ -88,14 +123,13 @@ const AdminSidebar = () => {
           <FaUser size={18} />
           Admin Profile
         </NavLink>
-
       </nav>
 
       {/* --- LOGOUT --- */}
       <div className="p-5 border-t border-slate-900">
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleLogout}
           className="flex items-center justify-center gap-3 w-full py-3 rounded-lg text-rose-400 bg-rose-500/5 hover:bg-rose-500 hover:text-white text-xs font-bold uppercase tracking-widest transition-all"
         >
@@ -103,7 +137,6 @@ const AdminSidebar = () => {
           Logout
         </motion.button>
       </div>
-
     </aside>
   );
 };

@@ -1,8 +1,36 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import { NavLink, Link } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
+import {FaBell} from "react-icons/fa";
+import {getUnreadCount} from "../../service/notificationService";
 
 const UserNavbar = () => {
+
+  const [unreadCount, setUnreadCount] = useState(0);
+  const[isfetched,setIsFetched]=useState(false);
+  const fetchUnreadCount = async () => {
+   if(!isAuthenticated) return; // Skip fetching if not authenticated
+    try {
+      const res = await getUnreadCount();
+      setUnreadCount(res.data || 0);
+      setIsFetched(true);
+    } catch (err) {
+      console.error("Error fetching unread count", err);
+    }
+  };
+ 
+  useEffect(() => {
+    // initial fetch
+    fetchUnreadCount();
+
+    // polling every 5 seconds
+    const timer = setInterval(() => {
+      fetchUnreadCount();
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const isAuthenticated = sessionStorage.getItem("isAuthenticated");
   const name = sessionStorage.getItem("name");
   const role = sessionStorage.getItem("role");
@@ -26,31 +54,49 @@ const UserNavbar = () => {
           to="/"
           className="text-xl md:text-2xl font-extrabold tracking-tight text-orange-500"
         >
-          House<span className="text-slate-900">Rent</span>
+          Rent<span className="text-slate-900">Hub</span>
         </Link>
 
         {/* --- MENU --- */}
         <ul className="hidden md:flex items-center gap-8">
           <li><NavLink to="/" className={navLinkClass}>Home</NavLink></li>
           <li><NavLink to="/properties" className={navLinkClass}>Properties</NavLink></li>
-          <li><NavLink to="/about" className={navLinkClass}>About</NavLink></li>
+          <li><NavLink to="/about" className={navLinkClass}>About-Us</NavLink></li>
+          <li><NavLink to="/contact" className={navLinkClass}>Contact</NavLink></li>
         </ul>
 
         {/* --- RIGHT SECTION --- */}
         <div className="hidden md:flex items-center">
 
           {isAuthenticated && role === "TENANT" ? (
-            <Link
-              to="/profile"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl 
-              bg-slate-100 text-slate-700 font-medium text-sm
-              hover:bg-orange-500 hover:text-white transition-all duration-300 shadow-sm"
-            >
-              <RxAvatar size={20} />
-              <span className="max-w-25 truncate">
-                {name || "User"}
-              </span>
-            </Link>
+            <div className="flex items-center gap-4">
+
+              <Link
+                to="/profile"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl 
+                bg-slate-100 text-slate-700 font-medium text-sm
+                hover:bg-orange-500 hover:text-white transition-all duration-300 shadow-sm"
+              >
+                <RxAvatar size={20} />
+                <span className="max-w-25 truncate">
+                  {name || "User"}
+                </span>
+              </Link>
+
+              <NavLink
+                to="/user/notification"
+                className={({ isActive }) => `${navLinkClass({ isActive })} relative`}
+              >
+                <FaBell size={20} />
+
+                {unreadCount > 0 && (
+                  <span className="absolute -top-2 -right-2 text-xs bg-red-500 text-white rounded-full min-w-4.5 h-4.5 flex items-center justify-center px-1">
+                    {unreadCount}
+                  </span>
+                )}
+              </NavLink>
+
+            </div>
           ) : (
             <Link
               to="/login"
