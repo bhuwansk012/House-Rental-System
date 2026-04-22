@@ -42,7 +42,7 @@ function AppRoutes() {
       <Route path="/map-route/:id" element={<MapRoutePage />} />
       <Route path="/forget-password" element={<Forget/>}/>
       <Route path="/password/reset/:token" element={<Reset />} />
-      <Route path="/payment/esewa" element={<EsewaPayment />} />
+      <Route path="/payment/esewa/:id" element={<EsewaPayment />} />
       <Route path="/success" element={<Success />} />
       <Route path="/failure" element={<Failure />} />
       {/* User Routes */}

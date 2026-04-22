@@ -31,7 +31,7 @@ const AdminSidebar = () => {
   useEffect(() => {
     fetchUnreadCount();
 
-    const interval = setInterval(fetchUnreadCount, 5000); // poll every 5s
+    const interval = setInterval(fetchUnreadCount, 60000); // poll every 60s
     return () => clearInterval(interval);
   }, []);
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPropertyById } from '../../service/ownerService';
 import { motion, AnimatePresence } from 'framer-motion';
+import {Link} from 'react-router-dom';
 import { 
   HiOutlineLocationMarker, HiOutlineHome, 
   HiArrowLeft, HiOutlineShare, HiOutlineHeart, HiOutlineLightningBolt
@@ -166,6 +167,13 @@ const Detail = () => {
             </p>
           </div>
         </div>
+        {!property.payment_status&&(
+          <div>
+            <Link to={`/payment/esewa/${property.id}`} className="bg-green-400 text-white px-6 py-3 rounded-full hover:bg-green-700 transition-colors">
+              Make Payment
+            </Link>
+          </div>
+        )}
 
       </div>
     </motion.div>

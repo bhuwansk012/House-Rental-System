@@ -35,7 +35,7 @@ const OwnerSidebar = ({ isOpen }) => {
       // polling every 5 seconds
       const timer = setInterval(() => {
         fetchUnreadCount();
-      }, 5000);
+      }, 60000);
   
       return () => clearInterval(timer);
     }, []);
