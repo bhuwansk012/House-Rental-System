@@ -123,7 +123,7 @@ const OwnerProfile = () => {
             {/* Front Document */}
             <div>
               <p className="text-sm font-medium text-gray-500 mb-3 flex items-center gap-1">
-                <FiFileText /> Front Document
+                <FiFileText /> Front-side Citizenship
               </p>
 
               <div className="h-80 border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
@@ -144,7 +144,7 @@ const OwnerProfile = () => {
             {/* Back Document */}
             <div>
               <p className="text-sm font-medium text-gray-500 mb-3 flex items-center gap-1">
-                <FiFileText /> Back Document
+                <FiFileText /> Back-side Citizenship
               </p>
 
               <div className="h-80 border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">

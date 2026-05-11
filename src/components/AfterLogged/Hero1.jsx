@@ -20,7 +20,7 @@ const Hero1 = ({ image }) => {
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-900/40 to-slate-900/20 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-linear-to-br from-slate-900/70 via-slate-900/40 to-slate-900/20 backdrop-blur-[2px]" />
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-5xl px-6 text-center flex flex-col items-center justify-center">
@@ -41,8 +41,8 @@ const Hero1 = ({ image }) => {
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white leading-tight tracking-tight mb-6">
             Welcome Back,
             <br />
-            <span className="bg-gradient-to-r from-orange-400 via-rose-400 to-pink-500 bg-clip-text text-transparent">
-              {name.split(" ")[0]} 👋
+            <span className="bg-linear-to-r from-orange-400 via-rose-400 to-pink-500 bg-clip-text text-transparent">
+              {name.split(" ")[0]} 
             </span>
           </h1>
 
@@ -57,27 +57,19 @@ const Hero1 = ({ image }) => {
 
             {/* Primary Button */}
             <button
-              onClick={() => window.scrollTo({ top: 700, behavior: 'smooth' })}
+              onClick={() => window.scrollTo({ top: 900, behavior: 'smooth' })}
               className="group flex items-center gap-3 bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold tracking-widest text-xs uppercase transition-all duration-300 hover:bg-orange-500 hover:text-white hover:scale-105 shadow-xl"
             >
               Start Searching
               <FiArrowRight className="transition-transform group-hover:translate-x-1" />
             </button>
 
-            {/* Tip Box */}
-            <div className="hidden md:flex items-center gap-3 text-white/90 text-sm bg-white/10 backdrop-blur-lg px-6 py-4 rounded-2xl border border-white/20 shadow-md">
-              <FiSearch className="text-orange-300" />
-              <span className="font-medium">
-                Tip: Use filters to find better results faster
-              </span>
-            </div>
-
           </div>
         </motion.div>
       </div>
 
       {/* Bottom Fade */}
-      <div className="absolute bottom-0 left-0 w-full h-28 bg-gradient-to-t from-[#f8fafc] to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-28 bg-linear-to-t from-[#f8fafc] to-transparent" />
 
     </section>
   );

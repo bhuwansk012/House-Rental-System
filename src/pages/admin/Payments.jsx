@@ -118,15 +118,6 @@ const Payments = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-white border border-slate-200 px-4 py-2 rounded-full shadow-sm">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-            </span>
-            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
-              Live Monitoring
-            </span>
-          </div>
         </div>
 
         {/* STATS */}
@@ -164,9 +155,7 @@ const Payments = () => {
               <div className="w-2 h-8 bg-indigo-600 rounded-full mr-1"></div>
               Revenue Flow Chart
             </h3>
-            <div className="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-full uppercase tracking-wider self-start">
-              Activity: Last 10 Successes
-            </div>
+            
           </div>
 
           <div className="h-80 w-full">

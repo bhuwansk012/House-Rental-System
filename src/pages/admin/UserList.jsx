@@ -199,39 +199,7 @@ const UserList = () => {
         </div>
 
         {/* FOOTER STATS */}
-        <div className="mt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-2xl shadow-sm border">
-
-          <div className="flex gap-6">
-            <div>
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">
-                Total
-              </p>
-              <p className="text-xl font-bold text-slate-800">
-                {users.length}
-              </p>
-            </div>
-
-            <div className="w-px bg-slate-200" />
-
-            <div>
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">
-                Filtered
-              </p>
-              <p className="text-xl font-bold text-emerald-600">
-                {filteredUsers.length}
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => window.print()}
-            className="px-5 py-2.5 bg-slate-800 text-white rounded-xl text-xs font-semibold hover:bg-black transition"
-          >
-            Print
-          </button>
-
-        </div>
-
+       
       </div>
     </motion.div>
   );

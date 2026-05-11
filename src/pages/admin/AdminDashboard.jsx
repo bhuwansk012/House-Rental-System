@@ -115,19 +115,11 @@ const AdminDashboard = () => {
 
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight text-slate-800">
             Platform{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-violet-600">
               Analytics
             </span>
           </h1>
         </div>
-
-        <button
-          onClick={generatePDFReport}
-          className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-indigo-600 transition-all shadow-lg active:scale-95"
-        >
-          <FiDownload /> Export PDF
-        </button>
-
       </header>
 
       {/* STATS */}
@@ -142,15 +134,11 @@ const AdminDashboard = () => {
             whileHover={{ y: -6 }}
             className="group relative bg-white rounded-3xl p-6 shadow-lg border border-white overflow-hidden"
           >
-            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${item.color} opacity-[0.05] rounded-full -mr-10 -mt-10`} />
+            <div className={`absolute top-0 right-0 w-32 h-32 bg-linear-to-br ${item.color} opacity-[0.05] rounded-full -mr-10 -mt-10`} />
 
             <div className="flex justify-between items-start mb-4">
-              <div className={`p-3 rounded-2xl bg-gradient-to-br ${item.color} text-white shadow-md`}>
+              <div className={`p-3 rounded-2xl bg-linear-to-br ${item.color} text-white shadow-md`}>
                 {React.cloneElement(item.icon, { size: 20 })}
-              </div>
-
-              <div className="flex items-center text-emerald-500 text-[11px] font-bold bg-emerald-50 px-2 py-1 rounded-lg">
-                <FiTrendingUp className="mr-1" /> Live
               </div>
             </div>
 
@@ -184,7 +172,7 @@ const AdminDashboard = () => {
             </p>
           </div>
 
-          <div className="h-[320px]">
+          <div className="h-80">
             <ResponsiveContainer>
               <BarChart
                 data={[
@@ -226,7 +214,7 @@ const AdminDashboard = () => {
             </p>
           </div>
 
-          <div className="h-[260px] w-full flex items-center justify-center relative">
+          <div className="h-65 w-full flex items-center justify-center relative">
             <div className="absolute text-center">
               <p className="text-[11px] text-slate-400 uppercase tracking-wider">
                 Total

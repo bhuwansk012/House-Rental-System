@@ -15,7 +15,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     logout();
-    window.location.reload(navigate("/")); // Force reload to update UI based on new auth state
+    navigate("/") // Force reload to update UI based on new auth state
     toast.success("You have logged out successfully!");
   };
 

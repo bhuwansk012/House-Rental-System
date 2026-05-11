@@ -35,8 +35,8 @@ const Login = () => {
           navigate("/owner/dashboard");
           toast.success(response.data.message);
         } else {
-          window.location.reload(navigate("/")); // Force reload to update UI based on new auth state
-          // toast.success(response.data.message);
+          navigate("/"); // Force reload to update UI based on new auth state
+          toast.success(response.data.message);
         }
 
       }

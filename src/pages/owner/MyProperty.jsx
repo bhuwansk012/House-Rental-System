@@ -19,11 +19,10 @@ import AddProperty from "../../modal/formmodal/AddProperty";
 
 const MyProperty = () => {
   const navigate = useNavigate();
-
   const [properties, setProperties] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const unpaidCount = properties.filter((p) => !p.payment_status).length;
   useEffect(() => {
     const fetchProperties = async () => {
       try {
@@ -32,7 +31,7 @@ const MyProperty = () => {
 
         console.log("Fetched properties:", data);
 
-        // ✅ FIXED: map images per property
+        // FIXED: map images per property
         const formatted = data
           .slice()
           .reverse()
@@ -40,9 +39,9 @@ const MyProperty = () => {
             ...p,
             images: Array.isArray(p.images)
               ? p.images.map(
-                  (img) =>
-                    `http://localhost:8080/uploads/properties/${img}`
-                )
+                (img) =>
+                  `http://localhost:8080/uploads/properties/${img}`
+              )
               : [],
           }));
 
@@ -82,7 +81,7 @@ const MyProperty = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] font-sans pb-20">
-      
+
       {/* HERO */}
       <div className="relative h-95 bg-slate-900 overflow-hidden">
         {properties[0]?.images?.[0] && (
@@ -96,13 +95,24 @@ const MyProperty = () => {
         )}
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white">
-            Portfolio <span className="text-indigo-400">Overview</span>
-          </h1>
           <p className="text-slate-300 mt-3 max-w-xl font-medium">
             Manage your property listings efficiently
           </p>
         </div>
+        {unpaidCount > 0 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 top-2 w-[90%] right-0">
+            <div className="text-white font-bold bg-yellow-500 bg-opacity-90 px-6 py-3 rounded-xl shadow-lg">
+              <p>{unpaidCount} propert{unpaidCount > 1 ? "ies" : "y"} payment have not yet completed. please complete the payment to make them public and visible to tenants.</p>
+              {properties.map((prop) => (
+                <div key={prop.id}>
+                 {prop.payment_status === false && <p >{prop.title},</p>}
+                </div>
+              ))}
+            </div>
+
+
+          </div>
+        )}
       </div>
 
       {/* CONTENT */}
@@ -110,6 +120,7 @@ const MyProperty = () => {
 
         {/* ACTION BAR */}
         <div className="bg-white/80 backdrop-blur-xl border border-white shadow-xl rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center gap-4 mb-10">
+
           <div>
             <h2 className="text-2xl font-bold text-slate-800">
               Your Listings
@@ -149,7 +160,7 @@ const MyProperty = () => {
                   transition={{ delay: index * 0.05 }}
                   className="bg-white rounded-3xl border border-slate-100 shadow-lg hover:shadow-xl transition overflow-hidden group"
                 >
-                  
+
                   {/* IMAGE */}
                   <div className="h-64 overflow-hidden relative">
                     <img
@@ -159,8 +170,8 @@ const MyProperty = () => {
                       }
                       alt={prop.title}
                       onError={(e) =>
-                        (e.target.src =
-                          "https://via.placeholder.com/400x300")
+                      (e.target.src =
+                        "https://via.placeholder.com/400x300")
                       }
                       className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                     />
@@ -168,11 +179,10 @@ const MyProperty = () => {
                     {/* STATUS */}
                     <div className="absolute top-4 left-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
-                          prop.bookingStatus === "AVAILABLE"
+                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${prop.bookingStatus === "AVAILABLE"
                             ? "bg-emerald-500 text-white"
                             : "bg-amber-500 text-white"
-                        }`}
+                          }`}
                       >
                         {prop.bookingStatus}
                       </span>

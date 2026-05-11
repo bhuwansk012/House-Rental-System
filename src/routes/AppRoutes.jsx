@@ -20,7 +20,7 @@ import MyProperty from "../pages/owner/MyProperty";
 import Booking from "../pages/owner/Booking";
 import Payment from "../pages/owner/Payment";
 import OwnerProfile from "../pages/owner/OwnerProfile";
-import Report from "../pages/owner/Report";
+import Aggrement from "../pages/owner/Aggrement";
 import BookingDetails from "../pages/owner/BookingDetails";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import Details from '../pages/admin/Details';
@@ -33,6 +33,8 @@ import Payments from "../pages/admin/Payments";
 import PropertyList from "../pages/admin/PropertyList";
 import BookingList from "../pages/admin/BookingList";
 import OwnerList from "../pages/admin/OwnerList";
+import Rating from "../pages/admin/Rating";
+import Aggrements from "../pages/admin/Aggrements";
 import PropertyDetails from "../pages/user/PropertyDetails";
 import AdminProfile from '../pages/admin/AdminProfile'
 import Detail from "../pages/owner/Detail";
@@ -67,7 +69,7 @@ function AppRoutes() {
         <Route path="/owner/bookings" element={<Booking />} />
         <Route path="/owner/payments" element={<Payment />} />
         <Route path="/owner/profile" element={<OwnerProfile />} />
-        <Route path="/owner/reports" element={<Report />} />
+        <Route path="/owner/aggrement" element={<Aggrement />} />
        <Route path="/owner/property/details/:id" element={<Detail />} />
        <Route path="/owner/booking/details/:id" element={<BookingDetails />} />
       </Route>
@@ -83,6 +85,8 @@ function AppRoutes() {
         <Route path="/admin/profile" element={<AdminProfile/>}/>
         <Route path='/admin/payments' element={<Payments/>}/>
         <Route path="admin/property/details/:id" element={<Details/>}/>
+        <Route path="/admin/ratings" element={<Rating />} />
+        <Route path="/admin/aggrements" element={<Aggrements />} />
       </Route>
       
     </Routes>

@@ -73,10 +73,6 @@ const Payments = () => {
               </p>
               <h2 className="text-2xl font-black text-green-900">Rs. {totalRevenue.toLocaleString()}</h2>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-slate-400 font-bold uppercase">Status</p>
-              <p className="text-sm font-bold text-green-600">Live Feed</p>
-            </div>
           </div>
           
           <div className="h-[250px] w-full">

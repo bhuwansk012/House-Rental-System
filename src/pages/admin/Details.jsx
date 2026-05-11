@@ -178,7 +178,7 @@ const Details = () => {
         {/* Sidebar Quick Contact */}
         <div className="lg:col-span-1">
           <div className="bg-slate-900 text-white p-8 rounded-4xl sticky top-8">
-            <h4 className="text-xl font-bold mb-6">Interested in this Place?</h4>
+            <h4 className="text-xl font-bold mb-6">Contact Owner</h4>
             <div className="space-y-4 mb-8">
                <div className="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
                   <User size={18} className="text-indigo-400" />
@@ -189,9 +189,6 @@ const Details = () => {
                   <span className="font-medium">{property.ownerPhone}</span>
                </div>
             </div>
-            <button className="w-full bg-indigo-500 hover:bg-indigo-400 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
-              <Calendar size={18} /> Request Viewing
-            </button>
           </div>
         </div>
       </div>

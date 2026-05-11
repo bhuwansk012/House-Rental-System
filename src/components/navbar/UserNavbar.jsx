@@ -5,6 +5,11 @@ import {FaBell} from "react-icons/fa";
 import {getUnreadCount} from "../../service/notificationService";
 
 const UserNavbar = () => {
+  
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
 
   const [unreadCount, setUnreadCount] = useState(0);
   const[isfetched,setIsFetched]=useState(false);
@@ -18,7 +23,20 @@ const UserNavbar = () => {
       console.error("Error fetching unread count", err);
     }
   };
- 
+ useEffect(() => {
+  const timingOut = setInterval(() => {
+    const auth = sessionStorage.getItem("isAuthenticated");
+
+    if (auth) {
+      setIsAuthenticated(auth);
+      setName(sessionStorage.getItem("name"));
+      setRole(sessionStorage.getItem("role"));
+    }
+  }, 1000);
+
+  return () => clearInterval(timingOut);
+}, []);
+
   useEffect(() => {
     // initial fetch
     fetchUnreadCount();
@@ -26,14 +44,12 @@ const UserNavbar = () => {
     // polling every 5 seconds
     const timer = setInterval(() => {
       fetchUnreadCount();
-    }, 60000);
+    },1000);
 
     return () => clearInterval(timer);
   }, []);
 
-  const isAuthenticated = sessionStorage.getItem("isAuthenticated");
-  const name = sessionStorage.getItem("name");
-  const role = sessionStorage.getItem("role");
+
 
   const navLinkClass = ({ isActive }) =>
     `relative text-sm font-medium text-slate-600 transition-all duration-300 

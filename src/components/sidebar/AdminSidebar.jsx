@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
-import { FaAddressBook, FaUsers, FaUser, FaBell ,FaDollarSign} from "react-icons/fa";
+import { FaAddressBook, FaUsers, FaUser, FaBell ,FaDollarSign,FaStar} from "react-icons/fa";
 import { BsHousesFill } from "react-icons/bs";
 import { GrUserAdmin } from "react-icons/gr";
 import { IoLogOut, IoShieldCheckmark } from "react-icons/io5";
@@ -106,6 +106,14 @@ const AdminSidebar = () => {
         <NavLink to="/admin/payments" className={linkclass}>
           <FaDollarSign size={18} />
           Payments
+        </NavLink>
+        <NavLink to='/admin/aggrements' className={linkclass}>
+          <FaAddressBook size={18} />
+          Aggrements
+        </NavLink>
+        <NavLink to="/admin/ratings" className={linkclass}>
+          <FaStar size={18} />
+          Ratings
         </NavLink>
 
         {/* Access Control */}

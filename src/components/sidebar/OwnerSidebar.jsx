@@ -46,7 +46,7 @@ const OwnerSidebar = ({ isOpen }) => {
     { to: "/owner/my-property", icon: <FiHome />, label: "My Assets" },
     { to: "/owner/bookings", icon: <FiCalendar />, label: "Reservations" },
     { to: "/owner/payments", icon: <FiCreditCard />, label: "Payouts" },
-    { to: "/owner/reports", icon: <FiBarChart2 />, label: "Insights" },
+    { to: "/owner/aggrement", icon: <FiBarChart2 />, label: "Agreement" },
     { to: "/owner/notification", icon: <FiBell />, label: "Notifications", value: `${unreadCount}`  },
     { to: "/owner/profile", icon: <FiUser />, label: "Settings" },
   ];
