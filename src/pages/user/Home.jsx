@@ -8,12 +8,14 @@ import Propertydash from "../../components/AfterLogged/Propertydash";
 import Hero1 from "../../components/AfterLogged/Hero1";
 import {Link} from 'react-router-dom'
 
+
 const Home = () => {
   const role = sessionStorage.getItem("role");
   const isTenant = role === "TENANT";
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+
 
   const fetchProperty = async () => {
     try {
@@ -127,6 +129,8 @@ const Home = () => {
           </div>
         </div>
       )}
+
+
     </div>
   );
 };

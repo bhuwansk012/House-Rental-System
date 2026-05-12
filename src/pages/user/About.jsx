@@ -86,12 +86,7 @@ const About = () => {
             className="w-full h-[500px] object-cover rounded-[3rem] shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]"
           />
 
-          <div className="absolute -bottom-6 -right-6 hidden md:block bg-white p-8 rounded-[2rem] shadow-xl border border-slate-50">
-            <p className="text-4xl font-black text-orange-500">10k+</p>
-            <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">
-              Happy Tenants
-            </p>
-          </div>
+          
         </motion.div>
       </section>
 
@@ -224,8 +219,8 @@ const About = () => {
           </h2>
 
           <p className="mb-10 text-orange-50 font-medium text-lg max-w-2xl mx-auto">
-            Whether you're looking for a cozy studio or a luxury villa, your
-            perfect match is just a click away.
+            Whether you're looking for a beautiful home or a luxurious apartment, your
+            perfect match is just to here away.
           </p>
 
           <button

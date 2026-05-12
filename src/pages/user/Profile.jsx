@@ -1,23 +1,53 @@
-import React from "react";
+import React,{useState,useEffect}from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
-import { FiUser, FiMail, FiMapPin, FiLogOut, FiHeart, FiSettings } from "react-icons/fi";
+import { FiUser, FiMail, FiMapPin, FiLogOut, FiHeart, FiSettings, FiStar } from "react-icons/fi";
 import { logout } from "../../service/authService";
+import { checkRateStatus } from "../../service/ratingService";
+import RatingToSystem from "../../modal/formmodal/RatingToSystem";
+import Modal from "../../modal/public/Modal";
+
+
 
 const Profile = () => {
-  const navigate = useNavigate();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRated, setIsRated] = useState(false);
+  const navigate = useNavigate();
   const name = sessionStorage.getItem("name");
   const email = sessionStorage.getItem("email");
   const role = sessionStorage.getItem("role");
   const isAuthenticated = sessionStorage.getItem("isAuthenticated");
 
+  useEffect(() => {
+     const rate=checkRate();
+     setIsRated(rate);
+  }, []);
+
+
+  const checkRate = async () => {
+    try {
+      const response = await checkRateStatus();
+      setIsRated(response);
+    } catch (error) {
+      console.error("Error checking rate status:", error);
+    }
+  };
+
   const handleLogout = () => {
     logout();
-    navigate("/") // Force reload to update UI based on new auth state
+    window.location.href = "/"; // Force reload to update UI based on new auth state
     toast.success("You have logged out successfully!");
-  };
+    }
+
+   const handleRating = () => {
+    if (!isRated) {
+      setIsModalOpen(true);
+      window.location.href = "/profile"; // Force reload to update UI based on new auth state
+    } 
+    
+  }
 
   // Guard UI
   if (!isAuthenticated) {
@@ -123,9 +153,25 @@ const Profile = () => {
             >
               <FiLogOut /> Logout
             </button>
+            {!isRated && (
+              <button
+                onClick={handleRating}
+                className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold transition shadow-md active:scale-95"
+              >
+                <FiStar /> Rate to System
+              </button>
+            )}
           </div>
         </div>
       </motion.div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      >
+        <RatingToSystem />
+      </Modal>
+
     </div>
   );
 };
